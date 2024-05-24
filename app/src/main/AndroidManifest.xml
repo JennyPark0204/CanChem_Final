@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.canchem">
+    <!-- 서버 통신을 위한 인터넷 권한 얻기 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- 카메라 권한  -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- 갤러리 권한 -->
+    <!-- 10~12 버전 갤러리 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- 13~ 버전 갤러리 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.CanChem"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        <service android:name=".data.source.service.NewTokenRefreshJobService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <activity
+            android:name=".ui.test.YeonjeTestActivity"
+            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".ui.test.YeonjeTest"-->
+<!--            android:exported="false" /> &lt;!&ndash; <activity &ndash;&gt;-->
+        <!-- android:name=".ui.searchHistory.SearchHistoryActivity" -->
+        <!-- android:exported="false" /> -->
+        <!-- <activity -->
+        <!-- android:name=".ui.myFavorite.MyFavoriteActivity" -->
+        <!-- android:exported="false" /> exported가 뭔지 몰라서 일단 주석해놓음 -->
+        <activity android:name=".ui.searchHistory.SearchHistoryActivity" />
+        <activity android:name=".ui.myFavorite.MyFavoriteActivity" />
+
+        <meta-data
+            android:name="com.google.android.gms.auth.api.client.default_client_id"
+            android:value="@string/google_client_id" />
+
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.home.SearchActivity" />
+        <activity android:name=".ui.molecularInfo.ApiActivity" />
+    </application>
+
+</manifest>

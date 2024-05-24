@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.test.YeonjeTestActivity"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/testText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="hihi"
+        android:textSize="50dp">
+
+    </TextView>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnGo"
+        android:text="aaaaaa"
+        android:textSize="200dp"
+        >
+
+    </TextView>
+    <TextView
+        android:id="@+id/testText2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="hihi22222222"
+        android:textSize="50dp">
+
+    </TextView>
+
+</LinearLayout>

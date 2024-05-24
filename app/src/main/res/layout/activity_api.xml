@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/api"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.molecularInfo.ApiActivity"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/apiTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_star_empty"
+            android:padding="4dp"
+            />
+        <TextView
+            android:id="@+id/chemName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="화학식 이름"
+            android:textSize="20dp"
+            android:paddingTop="2dp"
+            />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/bottomLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:src="@drawable/chem_image"
+                />
+
+            <LinearLayout
+                android:id="@+id/textViewLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/cid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="텍스트뷰 1" />
+                <TextView
+                    android:id="@+id/inpacName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="텍스트뷰 2" />
+                <TextView
+                    android:id="@+id/molecular_fomula"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="텍스트뷰 3" />
+                <TextView
+                    android:id="@+id/molecular_weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="텍스트뷰 4" />
+                <TextView
+                    android:id="@+id/isomeric_smlies"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="텍스트뷰 5" />
+                <TextView
+                    android:id="@+id/inchi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="텍스트뷰 6" />
+                <TextView
+                    android:id="@+id/inchikey"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="텍스트뷰 7" />
+                <TextView
+                    android:id="@+id/canonical_smlies"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="텍스트뷰 8" />
+                <TextView
+                    android:id="@+id/temp1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="텍스트뷰 9" />
+                <TextView
+                    android:id="@+id/temp2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="텍스트뷰 10" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

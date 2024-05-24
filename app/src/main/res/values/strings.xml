@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">CanChem</string>
+
+    <string name="naver_client_id">7xgMXnt2Nx3C3ZD_nIZ3</string>
+    <string name="naver_client_secret">Urenmf1NTB</string>
+    <string name="naver_client_name">CanChem</string>
+
+    <string name="google_client_id">611236167774-9oe5nsr35ss68ngisi2cnc9ma22vamou.apps.googleusercontent.com</string>
+    <string name="web_client_id">611236167774-hudjgumg6o4hhqnkeiab1jjafa4hmbqj.apps.googleusercontent.com</string>
+    <string name="default_web_client_id" translatable="false">81431471745-2u2v2hdptk9b743h8fll2gntpoc72eog.apps.googleusercontent.com</string>
+</resources>

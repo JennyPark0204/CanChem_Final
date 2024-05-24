@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "81431471745",
+    "firebase_url": "https://canchem-96795-default-rtdb.firebaseio.com",
+    "project_id": "canchem-96795",
+    "storage_bucket": "canchem-96795.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:81431471745:android:8d921be2eb218e57da0f80",
+        "android_client_info": {
+          "package_name": "com.example.canchem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "81431471745-kc7mi9b164ci1ugth5p3q03gs3q3nc0m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.canchem",
+            "certificate_hash": "8154d19738d2be02d39ebe5421c463543588c4ae"
+          }
+        },
+        {
+          "client_id": "81431471745-2u2v2hdptk9b743h8fll2gntpoc72eog.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgIIUANFzzVQLbXTklSoioaSeVrNJfz18"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "81431471745-2u2v2hdptk9b743h8fll2gntpoc72eog.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

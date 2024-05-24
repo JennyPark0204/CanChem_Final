@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    android:drawable="@drawable/btnG_완성형"
+    android:width="60dp"
+    android:height="60dp"
+</resources>
