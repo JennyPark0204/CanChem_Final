@@ -1,6 +1,7 @@
 package com.example.canchem.data.source
 
 import com.google.gson.annotations.SerializedName
+//기모링딩동
 
 data class mol_Name(
     @SerializedName("cid") val cid: Int,
