@@ -16,7 +16,9 @@ fun fetchChemicalCompounds(context: Context, token: String, searchQuery: String,
             if (response.isSuccessful) {
                 val compoundResponse = response.body()
                 compoundResponse?.let {
-                    val compounds = it.searchResults
+                    val totalElements = it.totalElements
+                    val totalPages = it.totalPages
+                    val compounds = it. searchResults
                     compounds.forEach { compound ->
                         // 각 화합물에 대한 처리
                         val id = compound.id

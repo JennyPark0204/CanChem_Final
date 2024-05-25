@@ -32,7 +32,6 @@ import com.example.canchem.data.source.dataclass.Search.PredictionResult
 import com.example.canchem.data.source.myinterface.Search.ImageUploadService
 import com.example.canchem.data.source.myinterface.Search.MoleculeApiService
 import com.google.gson.Gson
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -46,6 +45,7 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
+
 
 class SearchActivity : AppCompatActivity() {
     companion object{
@@ -72,6 +72,7 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
+
         //입력 필터링 적용
         val editText = binding.searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
         setInputFilter(editText)
@@ -80,14 +81,17 @@ class SearchActivity : AppCompatActivity() {
         binding.searchView.isSubmitButtonEnabled = true
 
 
-
         // 검색 버튼 클릭 이벤트 처리
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                val page = 1
-                //임시 토큰
-                val token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJVTEVfVVNFUiIsImlhdCI6MTcxNjQ0NDUzMywiZXhwIjoxNzE2NDQ4MTMzfQ.gj8_6cdDhEgEjjGM2qRJo3kroydue2-yZtrcA65nrG0eJTAyxU7XgFfICXiNrcsElaiMWjJHlrOC0nuCrzLhsQ"
-                fetchChemicalCompounds(this@SearchActivity,"Bearer $token", "$query", page)
+
+                val page = 0
+
+                getToken(this@SearchActivity){ token->
+                    if(token!=null){
+                        fetchChemicalCompounds(this@SearchActivity,token, "$query", page)
+                    }
+                }
                 return false
             }
             override fun onQueryTextChange(newText: String?): Boolean {
@@ -363,36 +367,59 @@ class SearchActivity : AppCompatActivity() {
     }
     //이미지 서버 처리 함수
     private fun uploadImageToServer(imageBase64: String) {
-        val token = "123" // 임의의 토큰 값
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://34.22.100.227:8000")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val service = retrofit.create(ImageUploadService::class.java)
-        val decodedImage = Base64.decode(imageBase64, Base64.DEFAULT)
-        val requestBody = RequestBody.create("image/*".toMediaType(), decodedImage)
-        val imagePart = MultipartBody.Part.createFormData("image", "image.jpg", requestBody)
-        val call = service.uploadImage(token, imagePart)
-        call.enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    val predictionResultJson = response.body()?.string()
-                    val predictionResult = Gson().fromJson(predictionResultJson, PredictionResult::class.java)
-                    // 서버로부터 받은 값 토스트 메시지로 표시
-                    predictionResult?.let {
-                        Toast.makeText(this@SearchActivity, "User Token: ${it.userToken}", Toast.LENGTH_SHORT).show()
-                        Toast.makeText(this@SearchActivity, "SMILES: ${it.smiles}", Toast.LENGTH_SHORT).show()
+        getToken(this@SearchActivity) { token ->
+            if (token != null) {
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://34.22.100.227:8000")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+                val service = retrofit.create(ImageUploadService::class.java)
+                val decodedImage = Base64.decode(imageBase64, Base64.DEFAULT)
+                val requestBody = RequestBody.create("image/*".toMediaType(), decodedImage)
+                val imagePart = MultipartBody.Part.createFormData("image", "image.jpg", requestBody)
+                val call = service.uploadImage(token, imagePart)
+                call.enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        if (response.isSuccessful) {
+                            val predictionResultJson = response.body()?.string()
+                            val predictionResult =
+                                Gson().fromJson(predictionResultJson, PredictionResult::class.java)
+                            // 서버로부터 받은 값 토스트 메시지로 표시
+                            predictionResult?.let {
+                                Toast.makeText(
+                                    this@SearchActivity,
+                                    "User Token: ${it.userToken}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                Toast.makeText(
+                                    this@SearchActivity,
+                                    "SMILES: ${it.smiles}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } else {
+                            val errorBody = response.errorBody()?.string()
+                            Toast.makeText(
+                                this@SearchActivity,
+                                "이미지 업로드 실패: $errorBody",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
-                } else {
-                    val errorBody = response.errorBody()?.string()
-                    Toast.makeText(this@SearchActivity, "이미지 업로드 실패: $errorBody", Toast.LENGTH_SHORT).show()
-                }
-            }
 
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@SearchActivity, "네트워크 오류: ${t.message}", Toast.LENGTH_SHORT).show()
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        Toast.makeText(
+                            this@SearchActivity,
+                            "네트워크 오류: ${t.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
             }
-        })
+        }
     }
 
 //        //사진 선택 확인 다이얼로그 표시 함수
