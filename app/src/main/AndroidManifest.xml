@@ -27,11 +27,14 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.webview.WebViewActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.searchResult.SearchResultActivity"
             android:exported="false" />
 
         <service
-            android:name=".data.source.service.NewTokenRefreshJobService"
+            android:name=".data.source.service.TokenRefreshJobService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
@@ -63,15 +66,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.home.SearchActivity" />
-        <activity android:name=".ui.molecularInfo.ApiActivity" />
-
-        <!--크롭 액티비티-->
+        <activity android:name=".ui.molecularInfo.ApiActivity" /> <!-- 크롭 액티비티 -->
         <activity
             android:name="com.soundcloud.android.crop.CropImageActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Base.Theme.AppCompat" />
-
-        <!--   provider    -->
+            android:theme="@style/Base.Theme.AppCompat" /> <!-- provider -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.canchem.fileprovider"
