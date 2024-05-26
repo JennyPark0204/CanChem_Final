@@ -2,7 +2,6 @@ package com.example.canchem.ui.searchResult
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +18,10 @@ import com.example.canchem.ui.home.getToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.widget.TextView
+import android.graphics.Typeface
+import android.util.TypedValue
+import androidx.core.content.ContextCompat
 
 class SearchResultActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchResultBinding
@@ -40,7 +43,6 @@ class SearchResultActivity : AppCompatActivity() {
         totalPages = intent.getIntExtra("totalPages", 0)
         searchQuery = intent.getStringExtra("searchQuery")
         compounds = intent.getParcelableArrayListExtra("compounds") ?: arrayListOf()
-
 
         // 리사이클러뷰 설정
         setupRecyclerView()
@@ -67,32 +69,78 @@ class SearchResultActivity : AppCompatActivity() {
         val paginationContainer = binding.paginationContainer
         paginationContainer.removeAllViews()
 
-        for (i in 0..totalPages-1) {
-            val button = Button(this).apply {
-                text = (i+1).toString()
-                setOnClickListener {
-                    onPageButtonClick(i)
+        val pageRange = 5 // 현재 페이지를 중심으로 표시할 페이지 범위
+
+        // 이전 버튼
+        val prevButton = TextView(this).apply {
+            text = "<<"
+            textSize = 16f
+            setPadding(16, 16, 16, 16)
+            isClickable = true
+            setOnClickListener {
+                if (currentPage > 0) {
+                    currentPage -= 1
+                    onPageTextClick(currentPage)
                 }
             }
-            paginationContainer.addView(button)
         }
-    }
+        paginationContainer.addView(prevButton)
 
-    private fun onPageButtonClick(page: Int){
-        currentPage = page
-        try{
-            searchQuery?.let {
-                fetchNextPageData(it, currentPage)
+        // 페이지 번호 표시
+        val startPage = maxOf(currentPage - pageRange / 2, 0)
+        val endPage = minOf(startPage + pageRange, totalPages)
+
+        for (i in startPage until endPage) {
+            val textView = TextView(this).apply {
+                text = (i + 1).toString()
+                textSize = 16f
+                setPadding(16, 16, 16, 16)
+                setTextColor(ContextCompat.getColor(this@SearchResultActivity, R.color.black))
+                isClickable = true
+                setOnClickListener {
+                    currentPage = i
+                    onPageTextClick(currentPage)
+                }
             }
-        }catch (e: Exception){
-            Toast.makeText(this@SearchResultActivity, currentPage.toString(), Toast.LENGTH_LONG).show()
+
+            if (i == currentPage) {
+                textView.setTypeface(null, Typeface.BOLD) // 현재 페이지는 볼드 처리
+            }
+
+            val outValue = TypedValue()
+            theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+            textView.setBackgroundResource(outValue.resourceId)
+            paginationContainer.addView(textView)
+        }
+
+        // 다음 버튼
+        val nextButton = TextView(this).apply {
+            text = ">>"
+            textSize = 16f
+            setPadding(16, 16, 16, 16)
+            isClickable = true
+            setOnClickListener {
+                if (currentPage < totalPages - 1) {
+                    currentPage += 1
+                    onPageTextClick(currentPage)
+                }
+            }
+        }
+        paginationContainer.addView(nextButton)
+    }
+
+    private fun onPageTextClick(page: Int){
+        currentPage = page
+        setupPagingButtons() // 페이지 버튼 다시 설정
+        searchQuery?.let {
+            fetchNextPageData(it, currentPage)
         }
     }
 
-    private fun fetchNextPageData(search:String, page: Int) {
+    private fun fetchNextPageData(search: String, page: Int) {
         val service = NetworkModule.moleculeApiService
-        getToken(this@SearchResultActivity){token->
-            if(token != null){
+        getToken(this@SearchResultActivity) { token ->
+            if (token != null) {
                 val call = service.getCompounds(token, search, page)
                 call.enqueue(object : Callback<ChemicalCompoundResponse> {
                     override fun onResponse(call: Call<ChemicalCompoundResponse>, response: Response<ChemicalCompoundResponse>) {
@@ -101,7 +149,7 @@ class SearchResultActivity : AppCompatActivity() {
                             compoundResponse?.let {
                                 compounds.clear()
                                 compounds.addAll(it.searchResults)
-                                adapter.notifyDataSetChanged() //RecyclerView 갱신
+                                adapter.notifyDataSetChanged() // RecyclerView 갱신
                             }
                         } else {
                             val errorBody = response.errorBody()?.string()
@@ -110,12 +158,12 @@ class SearchResultActivity : AppCompatActivity() {
                             Toast.makeText(this@SearchResultActivity, message, Toast.LENGTH_LONG).show()
                         }
                     }
+
                     override fun onFailure(call: Call<ChemicalCompoundResponse>, t: Throwable) {
                         Toast.makeText(this@SearchResultActivity, "네트워크 오류가 발생했습니다: ${t.message}", Toast.LENGTH_SHORT).show()
                     }
                 })
             }
         }
-
     }
 }

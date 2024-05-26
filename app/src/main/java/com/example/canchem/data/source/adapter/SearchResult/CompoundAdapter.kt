@@ -36,23 +36,16 @@ class CompoundAdapter(
         private val compoundCid: TextView = itemView.findViewById(R.id.compound_cid)
         private val compoundIsomericSmiles: TextView = itemView.findViewById(R.id.compound_isomericSmiles)
         private val compoundDescription: TextView = itemView.findViewById(R.id.compound_Description)
+        private val maxLength = 70
 
         fun bind(compound: ChemicalCompound) {
-            compoundName.text = compound.inpacName
-            compoundId.text = "ID: ${compound.id}"
-            compoundCid.text = "CID: ${compound.cid}"
-            compoundIsomericSmiles.text = "Isomeric Smiles: ${compound.isomericSmiles}"
+            compoundName.text = compound.inpacName?.let { if (it.length > maxLength) "${it.substring(0, maxLength)}..." else it } ?: "Unknown"
+            compoundId.text = "ID: ${compound.id?.let { if (it.length > maxLength) "${it.substring(0, maxLength)}..." else it } ?: "N/A"}"
+            compoundCid.text = "CID: ${compound.cid?.let { if (it.length > maxLength) "${it.substring(0, maxLength)}..." else it } ?: "N/A"}"
+            compoundIsomericSmiles.text = "Isomeric Smiles: ${compound.isomericSmiles?.let { if (it.length > maxLength) "${it.substring(0, maxLength)}..." else it } ?: "N/A"}"
+            compoundDescription.text = "Description: ${compound.description?.let { if (it.length > maxLength) "${it.substring(0, maxLength)}..." else it } ?: "No description available"}"
 
-            val maxLength = 70
-            val description = compound.description
-            val trimmedDescription = if (description.length > maxLength) {
-                "${description.substring(0, maxLength)}..." // 최대 글자 수까지만 자르고 "..." 추가
-            } else {
-                description // 최대 글자 수보다 작으면 그대로 표시
-            }
-            compoundDescription.text = "Description: ${trimmedDescription}"
-
-            if (compound.image2DUri != null) {
+            if (!compound.image2DUri.isNullOrEmpty()) {
                 Picasso.get().load(compound.image2DUri).into(compoundImage)
             } else {
                 compoundImage.setImageResource(R.drawable.ic_no_image)
