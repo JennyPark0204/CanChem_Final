@@ -4,19 +4,16 @@
     package="com.example.canchem">
     <!-- 서버 통신을 위한 인터넷 권한 얻기 -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
-    <!-- 카메라 권한  -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- 카메라 권한 -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-    <uses-permission android:name="android.permission.CAMERA" />
 
-    <!-- 갤러리 권한 -->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 갤러리 권한 -->
     <!-- 10~12 버전 갤러리 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 13~ 버전 갤러리 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!-- 13~ 버전 갤러리 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
         android:allowBackup="true"
@@ -29,16 +26,24 @@
         android:theme="@style/Theme.CanChem"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <service android:name=".data.source.service.NewTokenRefreshJobService"
+        <activity
+            android:name=".ui.webview.WebViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.searchResult.SearchResultActivity"
+            android:exported="false" />
+
+        <service
+            android:name=".data.source.service.TokenRefreshJobService"
             android:enabled="true"
             android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <activity
             android:name=".ui.test.YeonjeTestActivity"
-            android:exported="false" />
-<!--        <activity-->
-<!--            android:name=".ui.test.YeonjeTest"-->
-<!--            android:exported="false" /> &lt;!&ndash; <activity &ndash;&gt;-->
+            android:exported="false" /> <!-- <activity -->
+        <!-- android:name=".ui.test.YeonjeTest" -->
+        <!-- android:exported="false" /> &lt;!&ndash; <activity &ndash;&gt; -->
         <!-- android:name=".ui.searchHistory.SearchHistoryActivity" -->
         <!-- android:exported="false" /> -->
         <!-- <activity -->
@@ -61,7 +66,22 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.home.SearchActivity" />
-        <activity android:name=".ui.molecularInfo.ApiActivity" />
+        <activity android:name=".ui.molecularInfo.ApiActivity" /> <!-- 크롭 액티비티 -->
+        <activity
+            android:name="com.soundcloud.android.crop.CropImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Base.Theme.AppCompat" /> <!-- provider -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.canchem.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <!-- 파일경로 xml 생성 -->
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_path" />
+        </provider>
     </application>
 
 </manifest>

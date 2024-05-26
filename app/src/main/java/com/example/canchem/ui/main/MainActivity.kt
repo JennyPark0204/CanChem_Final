@@ -14,7 +14,7 @@ import com.example.canchem.data.source.myinterface.NaverLogoutInterface
 import com.example.canchem.data.source.myinterface.NaverSignoutInterface
 import com.example.canchem.data.source.dataclass.NaverToken
 import com.example.canchem.data.source.dataclass.Token
-import com.example.canchem.data.source.util.NewJobSchedulerUtil
+import com.example.canchem.data.source.util.JobSchedulerUtil
 import com.example.canchem.databinding.ActivityMainBinding
 import com.example.canchem.ui.test.YeonjeTestActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        NewJobSchedulerUtil.scheduleJob(this)
+        JobSchedulerUtil.scheduleJob(this, (Math.random()*1000).toInt())
         /* View Binding 설정 */
         val binding = ActivityMainBinding.inflate(layoutInflater)
 
