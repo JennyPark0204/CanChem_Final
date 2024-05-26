@@ -226,10 +226,14 @@ class SearchHistoryActivity : AppCompatActivity(){
         // 메뉴 클릭시
         binding.btnMenu.setOnClickListener {
             drawer.openDrawer(Gravity.RIGHT)
+            binding.btnDeleteAll.isEnabled = false
+            binding.btnDeleteSome.isEnabled = false
         }
         // x버튼 클릭시
         findViewById<ImageView>(R.id.btnX).setOnClickListener{
             drawer.closeDrawer(Gravity.RIGHT)
+            binding.btnDeleteAll.isEnabled = true
+            binding.btnDeleteSome.isEnabled = true
         }
         // My Page 열기 버튼 클릭시
         findViewById<ImageView>(R.id.btnOpenDown).setOnClickListener{
@@ -306,6 +310,8 @@ class SearchHistoryActivity : AppCompatActivity(){
         val drawer = binding.searchHistory
         if(drawer.isDrawerOpen(Gravity.RIGHT)){
             drawer.closeDrawer(Gravity.RIGHT)
+            binding.btnDeleteAll.isEnabled = true
+            binding.btnDeleteSome.isEnabled = true
         }else{
             finish()
         }
