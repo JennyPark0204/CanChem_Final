@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="15dp"
-        android:text="총 n개의 검색결과가 있습니다."
+        android:text="&quot; &quot;에 관한 n개의 검색결과가 있습니다."
         android:gravity="center"
         android:textColor="#0000FF"
         />
@@ -57,12 +57,11 @@
 
     <LinearLayout
         android:id="@+id/paginationContainer"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_margin="16dp">
-
-    </LinearLayout>
+        android:padding="8dp"
+        android:layout_gravity="center_horizontal"/>
 
 </LinearLayout>

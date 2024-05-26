@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName
 
 data class ChemicalCompound(
     @SerializedName("id") val id: String,
-    @SerializedName("cid") val cid: Int,
+    @SerializedName("cid") val cid: String,
     @SerializedName("inpac_name") val inpacName: String,
     @SerializedName("molecular_formula") val molecularFormula: String,
-    @SerializedName("molecular_weight") val molecularWeight: Double,
+    @SerializedName("molecular_weight") val molecularWeight: String,
     @SerializedName("isomeric_smiles") val isomericSmiles: String,
     @SerializedName("inchi") val inchi: String,
     @SerializedName("inchiKey") val inchiKey: String,
@@ -19,26 +19,26 @@ data class ChemicalCompound(
     @SerializedName("image_3D_conformer") val image3DConformer: Image3DConformer?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
-        parcel.readInt(),
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readDouble(),
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "No description available",
         parcel.readString(),
         parcel.readParcelable(Image3DConformer::class.java.classLoader)
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
-        parcel.writeInt(cid)
+        parcel.writeString(cid)
         parcel.writeString(inpacName)
         parcel.writeString(molecularFormula)
-        parcel.writeDouble(molecularWeight)
+        parcel.writeString(molecularWeight)
         parcel.writeString(isomericSmiles)
         parcel.writeString(inchi)
         parcel.writeString(inchiKey)
