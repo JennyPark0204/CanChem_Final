@@ -42,16 +42,16 @@
             android:text="Compound CID"
             android:textSize="14sp" />
         <TextView
-            android:id="@+id/compound_description"
+            android:id="@+id/compound_isomericSmiles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Compound isomericSmiles"
+            android:textSize="14sp" />
+        <TextView
+            android:id="@+id/compound_Description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Compound Description"
-            android:textSize="14sp" />
-        <TextView
-            android:id="@+id/compound_smiles"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Compound Smiles"
             android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>

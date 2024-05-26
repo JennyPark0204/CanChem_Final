@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.searchResult.SearchResultActivity">
+    tools:context=".ui.searchResult.SearchResultActivity"
+    android:id="@+id/searchResult">
+
     <LinearLayout
         android:id="@+id/apiTop"
         android:layout_width="match_parent"
@@ -37,10 +39,30 @@
             />
     </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:text="총 n개의 검색결과가 있습니다."
+        android:gravity="center"
+        android:textColor="#0000FF"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_marginTop="5dp"/>
+
+    <LinearLayout
+        android:id="@+id/paginationContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_margin="16dp">
+
+    </LinearLayout>
 
 </LinearLayout>

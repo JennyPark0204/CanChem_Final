@@ -34,15 +34,23 @@ class CompoundAdapter(
         private val compoundName: TextView = itemView.findViewById(R.id.compound_name)
         private val compoundId: TextView = itemView.findViewById(R.id.compound_id)
         private val compoundCid: TextView = itemView.findViewById(R.id.compound_cid)
-        private val compoundDescription: TextView = itemView.findViewById(R.id.compound_description)
-        private val compoundSmiles: TextView = itemView.findViewById(R.id.compound_smiles)
+        private val compoundIsomericSmiles: TextView = itemView.findViewById(R.id.compound_isomericSmiles)
+        private val compoundDescription: TextView = itemView.findViewById(R.id.compound_Description)
 
         fun bind(compound: ChemicalCompound) {
             compoundName.text = compound.inpacName
             compoundId.text = "ID: ${compound.id}"
             compoundCid.text = "CID: ${compound.cid}"
-            compoundDescription.text = compound.description
-            compoundSmiles.text = "Smiles: ${compound.canonicalSmiles}"
+            compoundIsomericSmiles.text = "Isomeric Smiles: ${compound.isomericSmiles}"
+
+            val maxLength = 70
+            val description = compound.description
+            val trimmedDescription = if (description.length > maxLength) {
+                "${description.substring(0, maxLength)}..." // 최대 글자 수까지만 자르고 "..." 추가
+            } else {
+                description // 최대 글자 수보다 작으면 그대로 표시
+            }
+            compoundDescription.text = "Description: ${trimmedDescription}"
 
             if (compound.image2DUri != null) {
                 Picasso.get().load(compound.image2DUri).into(compoundImage)
