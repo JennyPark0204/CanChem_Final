@@ -171,7 +171,7 @@ class SearchActivity : AppCompatActivity() {
 
     // 입력 필터링 적용 함수
     fun setInputFilter(editText: EditText) {
-        val allowedChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ=()-#.$:/\\"
+        val allowedChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ=()-#.$:/@[]\\"
         editText.filters = arrayOf(InputFilter { source, start, end, dest, dstart, dend ->
             val filteredStringBuilder = StringBuilder()
             // 입력된 문자 중에서 허용된 문자인지 확인

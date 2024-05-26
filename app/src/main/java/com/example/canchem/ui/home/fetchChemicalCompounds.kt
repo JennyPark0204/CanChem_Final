@@ -1,9 +1,11 @@
 package com.example.canchem.ui.home
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import com.example.canchem.data.source.dataclass.Search.ChemicalCompoundResponse
+import com.example.canchem.ui.molecularInfo.ApiActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,8 +35,26 @@ fun fetchChemicalCompounds(context: Context, token: String, searchQuery: String,
                         val description = compound.description
                         val image2DUrl = compound.image2DUri
                         val image3DConformer = compound.image3DConformer
-                        // 이제 각 화합물에 대한 정보를 사용할 수 있습니다.
-                        Toast.makeText(context, "컴파운드 아이디: $id", Toast.LENGTH_SHORT).show()
+                    }
+                    if(totalElements == 0){
+                        Toast.makeText(context, "검색 결과가 존재하지 않습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                    else if(totalElements == 1){
+                        Toast.makeText(context, "검색 결과 하나 인텐트.", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(context, ApiActivity::class.java)
+
+                        intent.putExtra("compounds", compounds)
+
+                        context.startActivity(intent)
+                    }
+                    else{
+                        val intent = Intent(context, SearchActivity::class.java)
+
+                        intent.putExtra("totalElements", totalElements)
+                        intent.putExtra("totalPages", totalPages)
+                        intent.putExtra("compounds", compounds)
+
+                        context.startActivity(intent)
                     }
                 }
             } else {
