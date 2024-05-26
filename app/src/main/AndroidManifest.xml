@@ -31,7 +31,7 @@
             android:exported="false" />
 
         <service
-            android:name=".data.source.service.NewTokenRefreshJobService"
+            android:name=".data.source.service.TokenRefreshJobService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
