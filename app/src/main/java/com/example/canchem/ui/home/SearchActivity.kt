@@ -84,9 +84,7 @@ class SearchActivity : AppCompatActivity() {
         // 검색 버튼 클릭 이벤트 처리
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-
                 val page = 0
-
                 getToken(this@SearchActivity){ token->
                     if(token!=null){
                         fetchChemicalCompounds(this@SearchActivity,token, "$query", page)
