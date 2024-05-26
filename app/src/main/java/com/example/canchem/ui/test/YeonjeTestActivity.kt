@@ -12,7 +12,6 @@ import com.example.canchem.R
 import com.example.canchem.databinding.ActivityYeonjeTestBinding
 import com.example.canchem.ui.myFavorite.MyFavoriteActivity
 import com.example.canchem.ui.searchHistory.SearchHistoryActivity
-import com.example.canchem.ui.webview.WebViewActivity
 
 class YeonjeTestActivity : AppCompatActivity() {
     lateinit var binding : ActivityYeonjeTestBinding
