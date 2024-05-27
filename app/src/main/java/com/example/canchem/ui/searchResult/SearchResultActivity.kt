@@ -1,5 +1,6 @@
 package com.example.canchem.ui.searchResult
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -22,10 +23,12 @@ import android.widget.TextView
 import android.graphics.Typeface
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
+import com.example.canchem.ui.molecularInfo.MolecularInfoActivity
 
 class SearchResultActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchResultBinding
     private lateinit var adapter: CompoundAdapter
+
     private var compounds: ArrayList<ChemicalCompound> = arrayListOf()
     private var totalElements = 0
     private var totalPages = 0
@@ -55,11 +58,22 @@ class SearchResultActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        val query = searchQuery ?: "검색어"
+        binding.totalElementsText.text = "\"$query\"에 관한 ${totalElements}개의 검색결과가 있습니다."
+
+        binding.backBt.setOnClickListener{
+            onBackPressed()
+        }
     }
 
     private fun setupRecyclerView(){
         adapter = CompoundAdapter(this, compounds) { compound ->
             // 아이템 클릭 시 처리할 작업
+            val intent = Intent(this@SearchResultActivity, MolecularInfoActivity::class.java).apply {
+                putExtra("compound", compound)
+            }
+            startActivity(intent)
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter

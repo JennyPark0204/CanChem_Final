@@ -8,12 +8,13 @@
     android:id="@+id/searchResult">
 
     <LinearLayout
-        android:id="@+id/apiTop"
+        android:id="@+id/Top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="center_vertical">
         <ImageView
+            android:id="@+id/backBt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
@@ -40,6 +41,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/totalElementsText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="15dp"
