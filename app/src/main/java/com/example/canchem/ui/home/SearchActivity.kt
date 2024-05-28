@@ -25,10 +25,12 @@ import android.provider.Settings
 import com.soundcloud.android.crop.Crop
 import java.io.ByteArrayOutputStream
 import android.util.Base64
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import com.example.canchem.R
 import com.example.canchem.data.source.dataclass.Search.PredictionResult
+import com.example.canchem.data.source.dataclass.Search.ChemicalCompound
 import com.example.canchem.data.source.myinterface.Search.ImageUploadService
 import com.example.canchem.data.source.myinterface.Search.MoleculeApiService
 import com.google.gson.Gson
@@ -367,6 +369,8 @@ class SearchActivity : AppCompatActivity() {
     private fun uploadImageToServer(imageBase64: String) {
         getToken(this@SearchActivity) { token ->
             if (token != null) {
+                val ourToken = "$token".replace("Bearer ","")
+                Log.e("my token : ", ourToken)
                 val retrofit = Retrofit.Builder()
                     .baseUrl("http://34.22.100.227:8000")
                     .addConverterFactory(GsonConverterFactory.create())
@@ -375,31 +379,38 @@ class SearchActivity : AppCompatActivity() {
                 val decodedImage = Base64.decode(imageBase64, Base64.DEFAULT)
                 val requestBody = RequestBody.create("image/*".toMediaType(), decodedImage)
                 val imagePart = MultipartBody.Part.createFormData("image", "image.jpg", requestBody)
-                val call = service.uploadImage(token, imagePart)
+                val call = service.uploadImage(ourToken, imagePart)
                 call.enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
                         if (response.isSuccessful) {
-                            val predictionResultJson = response.body()?.string()
-                            val predictionResult =
-                                Gson().fromJson(predictionResultJson, PredictionResult::class.java)
-                            // 서버로부터 받은 값 토스트 메시지로 표시
-                            predictionResult?.let {
-                                Toast.makeText(
-                                    this@SearchActivity,
-                                    "User Token: ${it.userToken}",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                Toast.makeText(
-                                    this@SearchActivity,
-                                    "SMILES: ${it.smiles}",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                            val ChemicalCompoundResultJson = response.body()?.string()
+                            Log.d("UploadImage", "Response JSON: $ChemicalCompoundResultJson")
+                            ChemicalCompoundResultJson?.let {
+                                try {
+                                    val ChemicalCompoundResult = Gson().fromJson(it, ChemicalCompound::class.java)
+                                    // 서버로부터 받은 값을 토스트 메시지로 표시
+                                    ChemicalCompoundResult?.let { result ->
+                                        Toast.makeText(
+                                            this@SearchActivity,
+                                            result.toString(),
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                } catch (e: Exception) {
+                                    Log.e("UploadImage", "JSON Parsing Error", e)
+                                    Toast.makeText(
+                                        this@SearchActivity,
+                                        "JSON Parsing Error: ${e.message}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                         } else {
                             val errorBody = response.errorBody()?.string()
+                            Log.e("UploadImage", "Error Response: $errorBody")
                             Toast.makeText(
                                 this@SearchActivity,
                                 "이미지 업로드 실패: $errorBody",
@@ -409,6 +420,7 @@ class SearchActivity : AppCompatActivity() {
                     }
 
                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        Log.e("UploadImage", "Network Error", t)
                         Toast.makeText(
                             this@SearchActivity,
                             "네트워크 오류: ${t.message}",
@@ -419,23 +431,4 @@ class SearchActivity : AppCompatActivity() {
             }
         }
     }
-
-//        //사진 선택 확인 다이얼로그 표시 함수
-//        private fun showConfirmationDialog(photoUri: Uri) {
-//            val alertDialogBuilder = AlertDialog.Builder(this)
-//            alertDialogBuilder.apply {
-//                setMessage("선택한 사진을 사용하시겠습니까?")
-//                setPositiveButton("확인") { dialog, which ->
-//                    // 확인 버튼을 누르면 크롭 화면으로 이동
-//                    cropImage(photoUri)
-//                }
-//                setNegativeButton("취소") { dialog, which ->
-//                    // 취소 버튼을 누르면 다이얼로그를 닫고 다시 갤러리 실행
-//                    dialog.dismiss()
-//                }
-//            }
-//            val alertDialog = alertDialogBuilder.create()
-//            alertDialog.show()
-//        }
-
 }
