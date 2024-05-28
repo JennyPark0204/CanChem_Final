@@ -14,4 +14,5 @@ object NetworkModule {
         .build()
 
     val moleculeApiService: MoleculeApiService = retrofit.create(MoleculeApiService::class.java)
+    val bookMarkSevice: BookMarkService = retrofit.create(BookMarkService::class.java)
 }

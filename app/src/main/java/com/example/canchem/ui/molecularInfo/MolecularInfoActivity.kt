@@ -2,6 +2,7 @@ package com.example.canchem.ui.molecularInfo
 
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -9,8 +10,14 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.canchem.databinding.ActivityMolecularInfoBinding
 
 import com.example.canchem.R
+import com.example.canchem.data.source.dataclass.BookMark.BookMark
 import com.example.canchem.data.source.dataclass.Search.ChemicalCompound
+import com.example.canchem.ui.home.NetworkModule
+import com.example.canchem.ui.home.getToken
 import com.squareup.picasso.Picasso
+import retrofit2.Callback
+import retrofit2.Call
+import retrofit2.Response
 
 class MolecularInfoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMolecularInfoBinding
@@ -22,6 +29,7 @@ class MolecularInfoActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityMolecularInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         //ImageView 초기화
         compoundImage = findViewById(R.id.Image2D)
@@ -57,6 +65,8 @@ class MolecularInfoActivity : AppCompatActivity() {
 
 
             binding.description.text = "Description : ${it.description ?: "No description available"}"
+            //즐겨찾기 여부 검사
+            fetchBookmarkState(it.id)
         }
 
 
@@ -80,6 +90,42 @@ class MolecularInfoActivity : AppCompatActivity() {
 
         binding.backBt.setOnClickListener{
             onBackPressed()
+        }
+    }
+
+    //즐겨찾기 여부를 먼저 확인하고 화면에 띄움
+    private fun fetchBookmarkState(moleculeId: String) {
+        val bookMarkService = NetworkModule.bookMarkSevice
+        getToken(this@MolecularInfoActivity) { token ->
+            if (token != null) {
+                val token1 = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJVTEVfVVNFUiIsImlhdCI6MTcxNjg3OTQ0NiwiZXhwIjoxNzE2ODgzMDQ2fQ.hWTI6z0MSwB9qDZVEuopnTLMgrPQad8PkytOZVJi6utmeeCREmoCtROwCNLGKY8tRcNrvjiOJum0Zr1XkFJdLw"
+                val call = bookMarkService.getBookmark("Bearer ${token1}", moleculeId)
+                call.enqueue(object : Callback<BookMark> {
+                    override fun onResponse(call: Call<BookMark>, response: Response<BookMark>) {
+                        if(response.isSuccessful){
+                            val bookMark = response.body()
+                            bookMark?.let {
+                                if(it.state){
+                                    isStarFilled = true
+                                    binding.star.setImageResource(R.drawable.ic_star_filled)
+                                }
+                                else{
+                                    isStarFilled = false
+                                    binding.star.setImageResource(R.drawable.ic_star_empty)
+                                }
+                            }
+                        }
+                        else{
+                            //서버통신 실패
+                            Toast.makeText(this@MolecularInfoActivity, "즐겨찾기 정보를 가져오는데 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                        }
+
+                    }
+                    override fun onFailure(call: Call<BookMark>, t: Throwable) {
+                        Toast.makeText(this@MolecularInfoActivity, "네트워크 오류가 발생했습니다: ${t.message}", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
         }
     }
 }
