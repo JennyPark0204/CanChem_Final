@@ -1,21 +1,32 @@
 package com.example.canchem.ui.molecularInfo
 
+import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
+import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.example.canchem.databinding.ActivityMolecularInfoBinding
 import com.example.canchem.R
 import com.example.canchem.data.source.dataclass.BookMark.BookmarkState
 import com.example.canchem.data.source.dataclass.Search.ChemicalCompound
 import com.example.canchem.ui.home.NetworkModule
+import com.example.canchem.ui.home.SearchActivity
 import com.example.canchem.ui.home.getToken
+import com.example.canchem.ui.main.MainActivity
+import com.example.canchem.ui.myFavorite.MyFavoriteActivity
 import com.example.canchem.ui.webView.WebGLViewr
 import com.squareup.picasso.Picasso
 import retrofit2.Callback
@@ -30,12 +41,14 @@ class MolecularInfoActivity : AppCompatActivity() {
     private var moleculeId : String? = null
     private var isStarFilled = false
     private var urlCid : String? = null
+    private lateinit var drawer: DrawerLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+//        enableEdgeToEdge()
         binding = ActivityMolecularInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        drawer = binding.molecularInfo
 
         //ImageView 초기화
         compoundImage = findViewById(R.id.Image2D)
@@ -185,6 +198,92 @@ class MolecularInfoActivity : AppCompatActivity() {
         binding.enlargement3D.setOnClickListener()
         {
             urlCid?.let { it1 -> joinWebGLViewer(it1) }
+        }
+
+        //메뉴
+        binding.menuBtn.setOnClickListener{
+            drawer.openDrawer(Gravity.RIGHT)
+        }
+        // x버튼 클릭시
+        findViewById<ImageView>(R.id.btnX).setOnClickListener{
+            drawer.closeDrawer(Gravity.RIGHT)
+        }
+        // My Page 열기 버튼 클릭시
+        findViewById<ImageView>(R.id.btnOpenDown).setOnClickListener{
+            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
+            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
+        }
+        // My Page 닫기 버튼 클릭시
+        findViewById<ImageView>(R.id.btnCloseUp).setOnClickListener{
+            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
+            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
+            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
+            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
+        }
+        // 회원탈퇴 클릭시
+        findViewById<TextView>(R.id.btnSignout).setOnClickListener{
+            AlertDialog.Builder(this)
+                .setTitle("정말 탈퇴하시겠습니까?")
+                .setMessage("탈퇴하실 경우, 모든 정보가 삭제됩니다.")
+                .setPositiveButton("확인", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        val intent = Intent(this@MolecularInfoActivity, MainActivity::class.java)
+                        intent.putExtra("function", "signout")
+                        startActivity(intent)
+                    }
+                })
+                .setNegativeButton("취소", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        Log.d("MyTag", "negative")
+                    }
+                })
+                .create()
+                .show()
+        }
+        // 로그아웃 클릭시
+        findViewById<TextView>(R.id.btnLogout).setOnClickListener{
+            AlertDialog.Builder(this)
+                .setTitle("정말 로그아웃 하시겠습니까?")
+                .setPositiveButton("확인", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        val intent = Intent(this@MolecularInfoActivity, MainActivity::class.java)
+                        intent.putExtra("function", "logout")
+                        startActivity(intent)
+                    }
+                })
+                .setNegativeButton("취소", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        Log.d("MyTag", "negative")
+                    }
+                })
+                .create()
+                .show()
+
+        }
+        // 즐겨찾기 클릭시
+        findViewById<TextView>(R.id.btnMyFavorite).setOnClickListener{
+            val intent = Intent(this, MyFavoriteActivity::class.java)
+            startActivity(intent)
+        }
+        // 검색기록 클릭시
+        findViewById<TextView>(R.id.btnSearchHistory).setOnClickListener{
+            drawer.closeDrawer(Gravity.RIGHT)
+        }
+        // 홈버튼 클릭시
+        findViewById<ImageView>(R.id.btnHome).setOnClickListener{
+            val intent = Intent(this, SearchActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    @SuppressLint("MissingSuperCall")
+    override fun onBackPressed() {
+        if(drawer.isDrawerOpen(Gravity.RIGHT)){
+            drawer.closeDrawer(Gravity.RIGHT)
+        }else{
+            finish()
         }
     }
 }

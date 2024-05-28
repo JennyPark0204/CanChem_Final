@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/molecular_info"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.molecularInfo.MolecularInfoActivity">
+    tools:context=".ui.molecularInfo.MolecularInfoActivity"
+    android:orientation="vertical">
     <LinearLayout
-        android:id="@+id/Top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_gravity="center_vertical">
+            android:gravity="center_vertical">
             <ImageView
                 android:id="@+id/backBt"
                 android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
 
             <ImageView
                 android:id="@+id/chemName"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
@@ -43,6 +43,7 @@
                 />
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/Top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -70,142 +71,110 @@
                 android:layout_gravity="center"
                 />
         </LinearLayout>
-    </LinearLayout>
-
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/Top"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:fillViewport="true">
-
-        <LinearLayout
-            android:id="@+id/bottomLayout"
+        <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <!-- ImageView의 높이를 비율로 조정합니다. -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="H,10:7">
-
-                    <ImageView
-                        android:id="@+id/Image2D"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:padding="10dp"
-                        android:src="@drawable/ic_no_image" />
-
-                    <WebView
-                        android:id="@+id/Image3D"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:padding="10dp" />
-
-                </LinearLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+            android:fillViewport="true">
             <LinearLayout
-                android:id="@+id/textViewLayout"
+                android:id="@+id/bottomLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/cid"
+                <ImageView
+                    android:id="@+id/Image2D"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_no_image" />
+                <WebView
+                    android:id="@+id/Image3D"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp" />
+                <LinearLayout
+                    android:id="@+id/textViewLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="17sp"
-                    android:layout_marginBottom="7dp"
-                    android:text="텍스트뷰 1" />
-                <TextView
-                    android:id="@+id/inpacName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="17sp"
-                    android:layout_marginBottom="7dp"
-                    android:text="텍스트뷰 2" />
-                <TextView
-                    android:id="@+id/molecularFormula"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="17sp"
-                    android:layout_marginBottom="7dp"
-                    android:text="텍스트뷰 3" />
-                <TextView
-                    android:id="@+id/molecularWeight"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="17sp"
-                    android:layout_marginBottom="7dp"
-                    android:text="텍스트뷰 4" />
-                <TextView
-                    android:id="@+id/isomericSmlies"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="17sp"
-                    android:layout_marginBottom="7dp"
-                    android:text="텍스트뷰 5" />
-                <TextView
-                    android:id="@+id/inchi"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="17sp"
-                    android:layout_marginBottom="7dp"
-                    android:text="텍스트뷰 6" />
-                <TextView
-                    android:id="@+id/inchikey"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="17sp"
-                    android:layout_marginBottom="7dp"
-                    android:text="텍스트뷰 7" />
-                <TextView
-                    android:id="@+id/canonicalSmlies"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="17sp"
-                    android:layout_marginBottom="7dp"
-                    android:text="텍스트뷰 8" />
-                <TextView
-                    android:id="@+id/synonyms"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="17sp"
-                    android:layout_marginBottom="7dp"
-                    android:text="텍스트뷰 9" />
-                <TextView
-                    android:id="@+id/description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="17sp"
-                    android:layout_marginBottom="7dp"
-                    android:text="텍스트뷰 10" />
-                <Button
-                    android:id="@+id/enlargement3D"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/readinglasse" />
-
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/cid"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="17sp"
+                        android:layout_marginBottom="7dp"
+                        android:text="텍스트뷰 1" />
+                    <TextView
+                        android:id="@+id/inpacName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="17sp"
+                        android:layout_marginBottom="7dp"
+                        android:text="텍스트뷰 2" />
+                    <TextView
+                        android:id="@+id/molecularFormula"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="17sp"
+                        android:layout_marginBottom="7dp"
+                        android:text="텍스트뷰 3" />
+                    <TextView
+                        android:id="@+id/molecularWeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="17sp"
+                        android:layout_marginBottom="7dp"
+                        android:text="텍스트뷰 4" />
+                    <TextView
+                        android:id="@+id/isomericSmlies"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="17sp"
+                        android:layout_marginBottom="7dp"
+                        android:text="텍스트뷰 5" />
+                    <TextView
+                        android:id="@+id/inchi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="17sp"
+                        android:layout_marginBottom="7dp"
+                        android:text="텍스트뷰 6" />
+                    <TextView
+                        android:id="@+id/inchikey"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="17sp"
+                        android:layout_marginBottom="7dp"
+                        android:text="텍스트뷰 7" />
+                    <TextView
+                        android:id="@+id/canonicalSmlies"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="17sp"
+                        android:layout_marginBottom="7dp"
+                        android:text="텍스트뷰 8" />
+                    <TextView
+                        android:id="@+id/synonyms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="17sp"
+                        android:layout_marginBottom="7dp"
+                        android:text="텍스트뷰 9" />
+                    <TextView
+                        android:id="@+id/description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="17sp"
+                        android:layout_marginBottom="7dp"
+                        android:text="텍스트뷰 10" />
+                    <Button
+                        android:id="@+id/enlargement3D"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/readinglasse" />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    </LinearLayout>
+    <include layout="@layout/activity_menu" />
+</androidx.drawerlayout.widget.DrawerLayout>
