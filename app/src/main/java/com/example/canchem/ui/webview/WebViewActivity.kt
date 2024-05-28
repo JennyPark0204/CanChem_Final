@@ -1,6 +1,7 @@
 package com.example.canchem.ui.webview
 
 import android.os.Bundle
+import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -16,8 +17,11 @@ class WebViewActivity : AppCompatActivity() {
         val binding = ActivityWebViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val webView = binding.webView
-        binding.webView.loadUrl("https://www.op.gg/?hl=ko_KR")
+        // WebView 설정 가져오기
+        val webSettings: WebSettings = binding.webView.settings
+        webSettings.javaScriptEnabled = true
+
+        binding.webView.loadUrl("https://threejs.org/examples/css3d_molecules.html")
 
     }
 }

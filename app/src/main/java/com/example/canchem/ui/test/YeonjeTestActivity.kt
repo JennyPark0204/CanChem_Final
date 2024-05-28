@@ -39,7 +39,8 @@ class YeonjeTestActivity : AppCompatActivity() {
 
 
         binding.btnGo.setOnClickListener{
-            val intent = Intent(this@YeonjeTestActivity, MyFavoriteActivity::class.java)
+            val intent = Intent(this@YeonjeTestActivity, SearchHistoryActivity::class.java)
+//            val intent = Intent(this@YeonjeTestActivity, WebViewActivity::class.java)
             startActivity(intent)
         }
 
