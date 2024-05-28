@@ -43,6 +43,7 @@ class MolecularInfoActivity : AppCompatActivity() {
         compound?.let { setText(it) }
         urlCid?.let { onWebView(it) }
         setOnClick()
+
     }
 
     private fun setText(compound : ChemicalCompound)
