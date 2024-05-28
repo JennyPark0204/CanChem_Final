@@ -215,20 +215,6 @@ class MainActivity : AppCompatActivity() {
                     Log.e("call error", t.toString())
                 }
             })
-            // Read from the database 양식?
-            tokenInFirebase.addValueEventListener(object: ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    // This method is called once with the initial value and again
-                    // whenever data at this location is updated.
-                    val value = snapshot.getValue().toString()
-//                    Toast.makeText(this@MainActivity, value, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "Value is: " + value)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.w(TAG, "Failed to read value.", error.toException())
-                }
-            })
         }
         override fun onFailure(httpState : Int, message: String) {
             val errorCode = NaverIdLoginSDK.getLastErrorCode().code
@@ -263,7 +249,7 @@ class MainActivity : AppCompatActivity() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         // This method is called once with the initial value and again
                         // whenever data at this location is updated.
-                        val value = snapshot.getValue().toString()
+                            val value = snapshot.getValue().toString()
                         Toast.makeText(this@MainActivity, value, Toast.LENGTH_LONG).show()
                         Log.d("회원탈퇴", "Value is는: " + value)
                         val call = signoutService.signout(value)

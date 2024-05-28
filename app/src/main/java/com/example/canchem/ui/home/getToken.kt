@@ -2,20 +2,22 @@ package com.example.canchem.ui.home
 
 import android.content.Context
 import android.widget.Toast
+import com.example.canchem.data.source.util.UserId
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 fun getToken(context: Context, callback: (String?) -> Unit) {
-    val database = FirebaseDatabase.getInstance()
+    val database = Firebase.database
     val tokenInFirebase = database.getReference("Token")
 
-
-    tokenInFirebase.addValueEventListener(object : ValueEventListener {
+    tokenInFirebase.child(UserId.userId!!).addValueEventListener(object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             // Token 값 읽어오기
-            val accessToken = snapshot.getValue(String::class.java)
+            val accessToken = snapshot.value.toString()
             // Callback 함수 호출하여 토큰 값 전달
             callback(accessToken)
         }
