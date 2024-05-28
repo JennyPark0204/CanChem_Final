@@ -30,14 +30,11 @@
             android:name=".ui.webView.WebGLViewr"
             android:exported="false" />
         <activity
-            android:name=".ui.webView.WebView"
-            android:exported="false" />
-        <activity
             android:name=".ui.searchResult.SearchResultActivity"
             android:exported="false" />
 
         <service
-            android:name=".data.source.service.NewTokenRefreshJobService"
+            android:name=".data.source.service.TokenRefreshJobService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
