@@ -3,10 +3,12 @@ package com.example.canchem.data.source.adapter
 import android.content.ContentValues
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import com.example.canchem.ui.searchHistory.SearchHistoryActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.canchem.databinding.ItemSearchBinding
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.canchem.data.source.myinterface.DeleteOneSearchHistoryInterface
 import com.example.canchem.data.source.dataclass.SearchData
 import com.example.canchem.data.source.dataclass.SearchDataList
@@ -93,17 +95,20 @@ class SearchRecyclerViewAdapter(): RecyclerView.Adapter<SearchRecyclerViewAdapte
             }
 
 //            var isBtnCheckBoxTrue = false // 즐겨찾기 해제인지 아닌지 판단
-//            // 선택삭제 체크버튼 클릭시
-//            binding.btnChecked.setOnCheckedChangeListener{buttonView, isChecked ->
-//                SearchHistoryActivity.setIsChecked(isChecked, mData!!.id)
-//            }
+            // 선택삭제 체크버튼 클릭시
+            binding.btnChecked.setOnCheckedChangeListener{buttonView, isChecked ->
+                SearchHistoryActivity.setIsChecked(isChecked, mData!!.id)
+            }
 //            binding.btnChecked.setOnClickListener{
 //                val newCheckedState = !binding.btnChecked.isChecked // 현재 상태의 반전된 값을 계산합니다.
 //                binding.btnChecked.isChecked = newCheckedState // 반전된 상태로 설정합니다.
 //                SearchHistoryActivity.setIsChecked(newCheckedState, mData!!.id) // 변경된 상태를 전달합니다.
 //            }
-        }
+            fun setCheckBox(){
+                binding.btnChecked.visibility = View.VISIBLE
+            }
 
+        }
         //id값 받아서 SearchData를 return해줌
 //        fun getSearchData(id : String) : MutableList<SearchData> {
 //            val list = mutableListOf<SearchData>()
@@ -114,6 +119,10 @@ class SearchRecyclerViewAdapter(): RecyclerView.Adapter<SearchRecyclerViewAdapte
 //            return list
 //        }
 
+//        fun setCheckBox(searchData: SearchData){
+//            binding.btnChecked.isChecked = true
+//            bind(searchData)
+//        }
 
         fun bind(searchData: SearchData){
             mData = searchData

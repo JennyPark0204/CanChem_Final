@@ -188,10 +188,10 @@ class SearchHistoryActivity : AppCompatActivity(){
             binding.btnDeleteSome.visibility = View.GONE
             binding.btnDeleteSomeYes.visibility = View.VISIBLE
             binding.btnDeleteSomeNo.visibility = View.VISIBLE
-
+            findViewById<ImageView>(R.id.btnX).visibility = View.GONE
         }
 
-        // 검색기록 선택삭제 중 삭제 클릭시
+        // 검색기록 선택삭제 중 삭제버튼 클릭시
         binding.btnDeleteSomeYes.setOnClickListener{
             for(i in idList){
                 idList.forEach { id ->
@@ -206,7 +206,7 @@ class SearchHistoryActivity : AppCompatActivity(){
             binding.btnDeleteSomeNo.visibility = View.GONE
         }
 
-        // 검색기록 선택삭제 중 취소 클릭시
+        // 검색기록 선택삭제 중 취소버튼 클릭시
         binding.btnDeleteSomeYes.setOnClickListener{
             findViewById<CheckBox>(R.id.btnChecked).visibility = View.GONE
             binding.btnDeleteAll.visibility = View.VISIBLE
