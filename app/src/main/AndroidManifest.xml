@@ -63,7 +63,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.home.SearchActivity" />
-        <activity android:name=".ui.molecularInfo.ApiActivity" />
+        <activity android:name=".ui.molecularInfo.MolecularInfoActivity" />
 
         <!--크롭 액티비티-->
         <activity

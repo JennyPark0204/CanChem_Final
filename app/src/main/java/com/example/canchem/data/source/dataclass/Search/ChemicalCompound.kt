@@ -14,6 +14,7 @@ data class ChemicalCompound(
     @SerializedName("inchi") val inchi: String,
     @SerializedName("inchiKey") val inchiKey: String,
     @SerializedName("canonical_smiles") val canonicalSmiles: String,
+    @SerializedName("synonyms") val synonyms: List<String>,
     @SerializedName("description") val description: String,
     @SerializedName("image_2D_url") val image2DUri: String?,
     @SerializedName("image_3D_conformer") val image3DConformer: Image3DConformer?
@@ -28,6 +29,7 @@ data class ChemicalCompound(
         parcel.readString() ?: "N/A",
         parcel.readString() ?: "N/A",
         parcel.readString() ?: "N/A",
+        parcel.createStringArrayList() ?: emptyList(),
         parcel.readString() ?: "No description available",
         parcel.readString(),
         parcel.readParcelable(Image3DConformer::class.java.classLoader)
@@ -43,6 +45,7 @@ data class ChemicalCompound(
         parcel.writeString(inchi)
         parcel.writeString(inchiKey)
         parcel.writeString(canonicalSmiles)
+        parcel.writeStringList(synonyms)
         parcel.writeString(description)
         parcel.writeString(image2DUri)
         parcel.writeParcelable(image3DConformer, flags)

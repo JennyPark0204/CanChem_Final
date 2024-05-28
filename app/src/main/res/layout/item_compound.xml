@@ -30,28 +30,28 @@
             android:textSize="17sp" />
 
         <TextView
-            android:id="@+id/compound_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Compound ID"
-            android:textSize="14sp" />
-        <TextView
             android:id="@+id/compound_cid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Compound CID"
             android:textSize="14sp" />
         <TextView
+            android:id="@+id/compound_mf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MF"
+            android:textSize="14sp" />
+        <TextView
+            android:id="@+id/compound_inpac_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="IUPAC Name"
+            android:textSize="14sp" />
+        <TextView
             android:id="@+id/compound_isomericSmiles"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Compound isomericSmiles"
-            android:textSize="14sp" />
-        <TextView
-            android:id="@+id/compound_Description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Compound Description"
+            android:text="isomeric SMILES"
             android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>

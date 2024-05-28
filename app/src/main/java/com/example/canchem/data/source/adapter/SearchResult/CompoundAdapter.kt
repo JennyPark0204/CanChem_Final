@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.canchem.R
 import com.squareup.picasso.Picasso
 import com.example.canchem.data.source.dataclass.Search.ChemicalCompound
+import com.example.canchem.databinding.ItemCompoundBinding
 
 class CompoundAdapter(
     private val context: Context,
@@ -32,18 +33,18 @@ class CompoundAdapter(
     inner class CompoundViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val compoundImage: ImageView = itemView.findViewById(R.id.compound_image)
         private val compoundName: TextView = itemView.findViewById(R.id.compound_name)
-        private val compoundId: TextView = itemView.findViewById(R.id.compound_id)
-        private val compoundCid: TextView = itemView.findViewById(R.id.compound_cid)
+        private val compoundCId: TextView = itemView.findViewById(R.id.compound_cid)
+        private val compoundMF: TextView = itemView.findViewById(R.id.compound_mf)
+        private val compoundInpacName: TextView = itemView.findViewById(R.id.compound_inpac_name)
         private val compoundIsomericSmiles: TextView = itemView.findViewById(R.id.compound_isomericSmiles)
-        private val compoundDescription: TextView = itemView.findViewById(R.id.compound_Description)
         private val maxLength = 70
 
         fun bind(compound: ChemicalCompound) {
-            compoundName.text = compound.inpacName?.let { if (it.length > maxLength) "${it.substring(0, maxLength)}..." else it } ?: "Unknown"
-            compoundId.text = "ID: ${compound.id?.let { if (it.length > maxLength) "${it.substring(0, maxLength)}..." else it } ?: "N/A"}"
-            compoundCid.text = "CID: ${compound.cid?.let { if (it.length > maxLength) "${it.substring(0, maxLength)}..." else it } ?: "N/A"}"
-            compoundIsomericSmiles.text = "Isomeric Smiles: ${compound.isomericSmiles?.let { if (it.length > maxLength) "${it.substring(0, maxLength)}..." else it } ?: "N/A"}"
-            compoundDescription.text = "Description: ${compound.description?.let { if (it.length > maxLength) "${it.substring(0, maxLength)}..." else it } ?: "No description available"}"
+            compoundName.text = compound.synonyms?.joinToString(separator = "; ") { if (it.length > maxLength) "${it.substring(0, maxLength)}..." else it } ?: "Unknown"
+            compoundCId.text = "Compound CID : ${compound.cid?.let { if (it.length > maxLength) "${it.substring(0, maxLength)}..." else it } ?: "N/A"}"
+            compoundMF.text = "MF : ${compound.molecularFormula?.let { if (it.length > maxLength) "${it.substring(0, maxLength)}..." else it } ?: "N/A"}"
+            compoundInpacName.text = "IUPAC Name : ${compound.inpacName?.let { if (it.length > maxLength) "${it.substring(0, maxLength)}..." else it } ?: "N/A"}"
+            compoundIsomericSmiles.text = "Isomeric SMILES : ${compound.isomericSmiles?.let { if (it.length > maxLength) "${it.substring(0, maxLength)}..." else it } ?: "N/A"}"
 
             if (!compound.image2DUri.isNullOrEmpty()) {
                 Picasso.get().load(compound.image2DUri).into(compoundImage)
