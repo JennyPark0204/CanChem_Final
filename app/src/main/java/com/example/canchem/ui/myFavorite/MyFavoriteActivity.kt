@@ -14,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.canchem.R
 import com.example.canchem.ui.home.SearchActivity
@@ -76,7 +77,7 @@ class MyFavoriteActivity : AppCompatActivity() {
         val database = Firebase.database
         val tokenInFirebase = database.getReference("Token")
         var accessToken : String? = null
-        tokenInFirebase.addValueEventListener(object: ValueEventListener {
+        tokenInFirebase.child(UserId.userId!!).addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
@@ -144,69 +145,75 @@ class MyFavoriteActivity : AppCompatActivity() {
             }
         })
 
-        //알림창
-//        AlertDialog.Builder(this)
-//            .setTitle("전체 삭제하시겠습니까?")
-//            .setPositiveButton("확인", object : DialogInterface.OnClickListener {
-//                override fun onClick(dialog: DialogInterface, which: Int) {
-//
-//                }
-//            })
-//            .setNegativeButton("취소", object : DialogInterface.OnClickListener {
-//                override fun onClick(dialog: DialogInterface, which: Int) {
-//                    Log.d("MyTag", "negative")
-//                }
-//            })
-//            .create()
-//            .show()
         // 즐겨찾기 전체 삭제. 서버에 전송하는 코드 작성해야 함
-        binding.btnDeleteAll.setOnClickListener{
+        binding.btnDeleteAll.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("전체 삭제하시겠습니까?")
                 .setPositiveButton("확인", object : DialogInterface.OnClickListener {
                     override fun onClick(dialog: DialogInterface, which: Int) {
                         val database = Firebase.database
                         val tokenInFirebase = database.getReference("Token")
-                        var accessToken : String? = null
-                        tokenInFirebase.addValueEventListener(object: ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                // This method is called once with the initial value and again
-                                // whenever data at this location is updated.
-                                accessToken = snapshot.getValue().toString()
+                        var accessToken: String? = null
+                        tokenInFirebase.child(UserId.userId!!)
+                            .addValueEventListener(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    // This method is called once with the initial value and again
+                                    // whenever data at this location is updated.
+                                    accessToken = snapshot.getValue().toString()
 //                Toast.makeText(this@SearchHistoryActivity,"파이어베이스 성공!", Toast.LENGTH_SHORT).show()
 
-                                // retrofit 변수 생성
-                                val retrofit = Retrofit.Builder()
-                                    .baseUrl("http://$ip:8080/")
-                                    .addConverterFactory(ScalarsConverterFactory.create()) //kotlin to json(역 일수도)
-                                    .build()
+                                    // retrofit 변수 생성
+                                    val retrofit = Retrofit.Builder()
+                                        .baseUrl("http://$ip:8080/")
+                                        .addConverterFactory(ScalarsConverterFactory.create()) //kotlin to json(역 일수도)
+                                        .build()
 
-                                // retrofit객체 생성
-                                val deleteAllService = retrofit.create(DeleteAllMyFavoriteInterface::class.java)
-                                val call = deleteAllService.deleteAll(accessToken)
+                                    // retrofit객체 생성
+                                    val deleteAllService =
+                                        retrofit.create(DeleteAllMyFavoriteInterface::class.java)
+                                    val call = deleteAllService.deleteAll(accessToken)
 
 
-                                call.enqueue(object : Callback<String> {
-                                    override fun onResponse(call: Call<String>, response: Response<String>) { //요청성공시
-                                        if (response.isSuccessful) {
-                                            mDatas.favoriteList.clear()
-                                            recyclerView(mDatas)
-                                            Toast.makeText(this@MyFavoriteActivity, "전체 삭제 완료", Toast.LENGTH_SHORT).show()
-                                        } else {
+                                    call.enqueue(object : Callback<String> {
+                                        override fun onResponse(
+                                            call: Call<String>,
+                                            response: Response<String>
+                                        ) { //요청성공시
+                                            if (response.isSuccessful) {
+                                                mDatas.favoriteList.clear()
+                                                recyclerView(mDatas)
+                                                Toast.makeText(
+                                                    this@MyFavoriteActivity,
+                                                    "전체 삭제 완료",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            } else {
 //                    Toast.makeText(this@SearchHistoryActivity, "SearchHistoryActivity Error", Toast.LENGTH_SHORT).show()
+                                            }
                                         }
-                                    }
 
-                                    override fun onFailure(call: Call<String>, t: Throwable) { //요청실패시
-                                        Toast.makeText(this@MyFavoriteActivity, "SearchHistoryActivity Server cannot 통신", Toast.LENGTH_SHORT).show()
-                                        Log.e("call error", t.toString())
-                                    }
-                                })
-                            }
-                            override fun onCancelled(error: DatabaseError) {
-                                Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
-                            }
-                        })
+                                        override fun onFailure(
+                                            call: Call<String>,
+                                            t: Throwable
+                                        ) { //요청실패시
+                                            Toast.makeText(
+                                                this@MyFavoriteActivity,
+                                                "SearchHistoryActivity Server cannot 통신",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                            Log.e("call error", t.toString())
+                                        }
+                                    })
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    Log.w(
+                                        ContentValues.TAG,
+                                        "Failed to read value.",
+                                        error.toException()
+                                    )
+                                }
+                            })
                     }
                 })
                 .setNegativeButton("취소", object : DialogInterface.OnClickListener {
@@ -218,7 +225,23 @@ class MyFavoriteActivity : AppCompatActivity() {
                 .show()
         }
 
+        drawer.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                // 드로어가 슬라이드될 때 호출됨
+            }
 
+            override fun onDrawerOpened(drawerView: View) {
+                binding.btnDeleteAll.isEnabled = false
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                binding.btnDeleteAll.isEnabled = true
+            }
+
+            override fun onDrawerStateChanged(newState: Int) {
+                // 드로어 상태가 변경될 때 호출됨
+            }
+        })
         // side menu. 여기부터 아래 코드는 모든 액티비티에 포함됨.
         // 메뉴 클릭시
         binding.btnMenu.setOnClickListener {
@@ -232,7 +255,22 @@ class MyFavoriteActivity : AppCompatActivity() {
             binding.btnDeleteAll.isEnabled = true // 사이드 바 열렸을 경우 원래 액티비티의 버튼 클릭 활성화
             //여기서 binding.btnDeleteAll.isEnabled = true처럼 활성화 해야 할 버튼들을 추가하기
         }
-        findViewById<LinearLayout>(R.id.btnMyPage).setOnClickListener{
+        // My Page 열기 버튼 클릭시
+        findViewById<ImageView>(R.id.btnOpenDown).setOnClickListener{
+            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
+            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
+        }
+        // My Page 닫기 버튼 클릭시
+        findViewById<ImageView>(R.id.btnCloseUp).setOnClickListener{
+            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
+            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
+            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
+            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
+        }
+        // My Page 글씨로 열고 닫기
+        findViewById<TextView>(R.id.btnMyPage).setOnClickListener{
             if(findViewById<ImageView>(R.id.btnOpenDown).visibility == View.VISIBLE){
                 findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
                 findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
@@ -267,12 +305,13 @@ class MyFavoriteActivity : AppCompatActivity() {
         }
         // 로그아웃 클릭시
         findViewById<TextView>(R.id.btnLogout).setOnClickListener{
+            Log.d("로그아웃", "클릭")
             AlertDialog.Builder(this)
                 .setTitle("정말 로그아웃 하시겠습니까?")
                 .setPositiveButton("확인", object : DialogInterface.OnClickListener {
                     override fun onClick(dialog: DialogInterface, which: Int) {
-                        finish()
                         val intent = Intent(this@MyFavoriteActivity, MainActivity::class.java)
+                        Log.d("로그아웃", "으로 메인 넘어감")
                         intent.putExtra("function", "logout")
                         startActivity(intent)
                     }

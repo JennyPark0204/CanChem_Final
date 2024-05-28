@@ -31,7 +31,6 @@ class SearchRecyclerViewAdapter(): RecyclerView.Adapter<SearchRecyclerViewAdapte
     private val ip : String = "13.124.223.31"
     val database = Firebase.database
     val tokenInFirebase = database.getReference("Token")
-
     //만들어진 뷰홀더 없을때 뷰홀더(레이아웃) 생성하는 함수
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val binding = ItemSearchBinding.inflate(LayoutInflater.from(parent.context),parent,false)
@@ -42,14 +41,6 @@ class SearchRecyclerViewAdapter(): RecyclerView.Adapter<SearchRecyclerViewAdapte
 
     //recyclerview가 viewholder를 가져와 데이터 연결할때 호출
     //적절한 데이터를 가져와서 그 데이터를 사용하여 뷰홀더의 레이아웃 채움
-//    override fun onBindViewHolder(holder: MyViewHolder, position: Int, payloads: MutableList<Any>) {
-//        if (payloads.isEmpty()) {
-//            super.onBindViewHolder(holder, position, payloads)
-//        } else {
-//            val visibility = payloads[0] as Int
-//            holder.setCheckboxVisibility(visibility)
-//        }
-//    }
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(datalist.searchList[position])
     }

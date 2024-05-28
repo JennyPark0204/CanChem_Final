@@ -16,6 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.canchem.R
 import com.example.canchem.ui.home.SearchActivity
@@ -23,6 +24,7 @@ import com.example.canchem.data.source.myinterface.DeleteAllSearchHistoryInterfa
 import com.example.canchem.data.source.dataclass.SearchDataList
 import com.example.canchem.data.source.myinterface.SearchHistoryInterface
 import com.example.canchem.data.source.adapter.SearchRecyclerViewAdapter
+import com.example.canchem.data.source.util.UserId
 import com.example.canchem.databinding.ActivitySearchHistoryBinding
 import com.example.canchem.databinding.ItemSearchBinding
 import com.example.canchem.ui.main.MainActivity
@@ -82,7 +84,7 @@ class SearchHistoryActivity : AppCompatActivity(){
         val database = Firebase.database
         val tokenInFirebase = database.getReference("Token")
         var accessToken : String? = null
-        tokenInFirebase.addValueEventListener(object: ValueEventListener {
+        tokenInFirebase.child(UserId.userId!!).addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
@@ -133,7 +135,7 @@ class SearchHistoryActivity : AppCompatActivity(){
                         val database = Firebase.database
                         val tokenInFirebase = database.getReference("Token")
                         var accessToken : String? = null
-                        tokenInFirebase.addValueEventListener(object: ValueEventListener {
+                        tokenInFirebase.child(UserId.userId!!).addValueEventListener(object: ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 // This method is called once with the initial value and again
                                 // whenever data at this location is updated.
@@ -183,7 +185,26 @@ class SearchHistoryActivity : AppCompatActivity(){
                 .create()
                 .show()
         }
+        // 밑의 코드는 복사해서 혼주누나 코드에 붙여야됨. 수정할 부분은 주석으로 말해줌
+        drawer.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                // 드로어가 슬라이드될 때 호출됨
+            }
 
+            override fun onDrawerOpened(drawerView: View) { //여기서 비활성화 할 버튼 추가삭제
+                binding.btnDeleteAll.isEnabled = false
+                binding.btnDeleteSome.isEnabled = false
+            }
+
+            override fun onDrawerClosed(drawerView: View) { //여기서 활성화 할 버튼 추가삭제
+                binding.btnDeleteAll.isEnabled = true
+                binding.btnDeleteSome.isEnabled = true
+            }
+
+            override fun onDrawerStateChanged(newState: Int) {
+                // 드로어 상태가 변경될 때 호출됨
+            }
+        })
         // 검색기록 선택삭제 클릭시
         binding.btnDeleteSome.setOnClickListener{
 //            findViewById<CheckBox>(R.id.btnChecked).visibility = View.VISIBLE
@@ -192,7 +213,6 @@ class SearchHistoryActivity : AppCompatActivity(){
             binding.btnDeleteSomeYes.visibility = View.VISIBLE
             binding.btnDeleteSomeNo.visibility = View.VISIBLE
             findViewById<ImageView>(R.id.btnX).visibility = View.GONE
-            adapter.changeItemsVisibility(View.VISIBLE)
         }
 
         // 검색기록 선택삭제 중 삭제버튼 클릭시
@@ -232,7 +252,22 @@ class SearchHistoryActivity : AppCompatActivity(){
             binding.btnDeleteAll.isEnabled = true
             binding.btnDeleteSome.isEnabled = true
         }
-        findViewById<LinearLayout>(R.id.btnMyPage).setOnClickListener{
+        // My Page 열기 버튼 클릭시
+        findViewById<ImageView>(R.id.btnOpenDown).setOnClickListener{
+            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
+            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
+        }
+        // My Page 닫기 버튼 클릭시
+        findViewById<ImageView>(R.id.btnCloseUp).setOnClickListener{
+            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
+            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
+            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
+            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
+        }
+        // My Page 글씨로 열고 닫기
+        findViewById<TextView>(R.id.btnMyPage).setOnClickListener{
             if(findViewById<ImageView>(R.id.btnOpenDown).visibility == View.VISIBLE){
                 findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
                 findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
