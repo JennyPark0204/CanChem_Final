@@ -49,7 +49,4 @@ class YeonjeTestActivity : AppCompatActivity() {
             insets
         }
     }
-//    fun sayHello(){
-//        binding.testText.text = "jkjkjkjkjk"
-//    }
 }

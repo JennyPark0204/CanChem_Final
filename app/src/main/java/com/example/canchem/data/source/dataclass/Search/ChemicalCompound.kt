@@ -64,4 +64,11 @@ data class ChemicalCompound(
             return arrayOfNulls(size)
         }
     }
+
+    override fun toString(): String {
+        return "ID: $id\nCID: $cid\nName: $inpacName\nMolecular Formula: $molecularFormula\n" +
+                "Molecular Weight: $molecularWeight\nIsomeric SMILES: $isomericSmiles\nInChI: $inchi\n" +
+                "InChIKey: $inchiKey\nCanonical SMILES: $canonicalSmiles\nSynonyms: ${synonyms.joinToString(", ")}\n" +
+                "Description: $description\n2D Image URL: $image2DUri\n3D Conformer: $image3DConformer"
+    }
 }
