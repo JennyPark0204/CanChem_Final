@@ -222,6 +222,20 @@ class MolecularInfoActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
             findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
         }
+        // My Page 글씨로 열고 닫기
+        findViewById<TextView>(R.id.btnMyPage).setOnClickListener{
+            if(findViewById<ImageView>(R.id.btnOpenDown).visibility == View.VISIBLE){
+                findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
+                findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
+                findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
+                findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
+            }else{
+                findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
+                findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
+                findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
+                findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
+            }
+        }
         // 회원탈퇴 클릭시
         findViewById<TextView>(R.id.btnSignout).setOnClickListener{
             AlertDialog.Builder(this)
