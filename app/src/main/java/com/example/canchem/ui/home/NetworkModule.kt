@@ -1,9 +1,11 @@
 package com.example.canchem.ui.home
 
+
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.example.canchem.data.source.myinterface.Search.MoleculeApiService
-import com.example.canchem.data.source.myinterface.BookMark.BookMarkService
+import com.example.canchem.data.source.myinterface.BookMark.BookmarkStateService
+import com.example.canchem.data.source.myinterface.BookMark.BookmarkService
 
 object NetworkModule {
     private const val BASE_URL = "http://13.124.223.31:8080"
@@ -14,4 +16,6 @@ object NetworkModule {
         .build()
 
     val moleculeApiService: MoleculeApiService = retrofit.create(MoleculeApiService::class.java)
+    val bookmarkStateSevice: BookmarkStateService = retrofit.create(BookmarkStateService::class.java)
+    val bookmarkService: BookmarkService = retrofit.create(BookmarkService::class.java)
 }

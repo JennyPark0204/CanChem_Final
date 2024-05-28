@@ -5,7 +5,7 @@ import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import com.example.canchem.data.source.dataclass.Search.ChemicalCompoundResponse
-import com.example.canchem.ui.molecularInfo.ApiActivity
+import com.example.canchem.ui.molecularInfo.MolecularInfoActivity
 import com.example.canchem.ui.searchResult.SearchResultActivity
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,9 +28,9 @@ fun fetchChemicalCompounds(context: Context, token: String, searchQuery: String,
                     }
                     else if(totalElements == 1){
                         Toast.makeText(context, "검색 결과 하나 인텐트.", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(context, ApiActivity::class.java)
+                        val intent = Intent(context, MolecularInfoActivity::class.java)
 
-                        intent.putExtra("compounds", compounds)
+                        intent.putExtra("compound", compounds[0])
 
                         context.startActivity(intent)
                     }
