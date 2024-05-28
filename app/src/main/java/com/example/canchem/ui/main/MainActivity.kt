@@ -17,6 +17,7 @@ import com.example.canchem.data.source.dataclass.Token
 import com.example.canchem.data.source.util.JobSchedulerUtil
 import com.example.canchem.databinding.ActivityMainBinding
 import com.example.canchem.ui.home.SearchActivity
+import com.example.canchem.ui.searchHistory.SearchHistoryActivity
 import com.example.canchem.ui.test.YeonjeTestActivity
 import com.example.canchem.ui.webview.WebViewActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -121,7 +122,7 @@ class MainActivity : AppCompatActivity() {
                     NidOAuthLogin().callProfileApi(nidProfileCallback)
 
                     Log.i("intent", intent.toString())
-                    val intent = Intent(this@MainActivity, SearchActivity::class.java)
+                    val intent = Intent(this@MainActivity, YeonjeTestActivity::class.java)
                     startActivity(intent)
                 }
                 override fun onFailure(httpStatus: Int, message: String) {
