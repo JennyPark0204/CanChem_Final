@@ -10,5 +10,5 @@ interface DeleteOneSearchHistoryInterface {
     fun deleteSearchHistory(
         @Header("Authorization") accessToken: String?,  // Bearer AccessToken
         @Path("id") id: String
-    ) : Call<String>
+    ) : Call<Void>
 }

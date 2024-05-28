@@ -9,5 +9,5 @@ interface DeleteAllSearchHistoryInterface {
     @DELETE("api/delete/all/log/search")
     fun deleteAll(
         @Header("Authorization") accessToken: String?,  // Bearer AccessToken
-    ) : Call<String>
+    ) : Call<Void>
 }
