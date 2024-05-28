@@ -203,15 +203,11 @@ class MyFavoriteActivity : AppCompatActivity() {
         // side menu. 여기부터 아래 코드는 모든 액티비티에 포함됨.
         // 메뉴 클릭시
         binding.btnMenu.setOnClickListener {
-            drawer.openDrawer(Gravity.RIGHT) // 사이드 바 오른쪽에서 열림
-            binding.btnDeleteAll.isEnabled = false // 사이드 바 열렸을 경우 원래 액티비티의 버튼 클릭 비활성화
-            //여기서 binding.btnDeleteAll.isEnabled = false처럼 비활성화 해야 할 버튼들을 추가하기
+            drawer.openDrawer(Gravity.RIGHT)
         }
         // x버튼 클릭시
         findViewById<ImageView>(R.id.btnX).setOnClickListener{
-            drawer.closeDrawer(Gravity.RIGHT) // 사이드 바 오른쪽에서 닫힘
-            binding.btnDeleteAll.isEnabled = true // 사이드 바 열렸을 경우 원래 액티비티의 버튼 클릭 활성화
-            //여기서 binding.btnDeleteAll.isEnabled = true처럼 활성화 해야 할 버튼들을 추가하기
+            drawer.closeDrawer(Gravity.RIGHT)
         }
         // My Page 열기 버튼 클릭시
         findViewById<ImageView>(R.id.btnOpenDown).setOnClickListener{
@@ -289,8 +285,6 @@ class MyFavoriteActivity : AppCompatActivity() {
         val drawer = binding.myFavorite
         if(drawer.isDrawerOpen(Gravity.RIGHT)){
             drawer.closeDrawer(Gravity.RIGHT)
-            binding.btnDeleteAll.isEnabled = true
-            //여기서 binding.btnDeleteAll.isEnabled = true처럼 활성화 해야 할 버튼들을 추가하기
         }else{
             finish()
         }
