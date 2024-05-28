@@ -15,8 +15,8 @@ import com.example.canchem.data.source.myinterface.NaverLogoutInterface
 import com.example.canchem.data.source.myinterface.NaverSignoutInterface
 import com.example.canchem.data.source.dataclass.NaverToken
 import com.example.canchem.data.source.dataclass.Token
-import com.example.canchem.data.source.util.JobSchedulerUtil
 import com.example.canchem.data.source.util.UserId
+import com.example.canchem.data.source.util.JobSchedulerUtil
 import com.example.canchem.databinding.ActivityMainBinding
 import com.example.canchem.ui.home.SearchActivity
 import com.example.canchem.ui.myFavorite.MyFavoriteActivity

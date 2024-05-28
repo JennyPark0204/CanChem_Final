@@ -6,43 +6,46 @@ import com.google.gson.annotations.SerializedName
 
 data class ChemicalCompound(
     @SerializedName("id") val id: String,
-    @SerializedName("cid") val cid: Int,
+    @SerializedName("cid") val cid: String,
     @SerializedName("inpac_name") val inpacName: String,
     @SerializedName("molecular_formula") val molecularFormula: String,
-    @SerializedName("molecular_weight") val molecularWeight: Double,
+    @SerializedName("molecular_weight") val molecularWeight: String,
     @SerializedName("isomeric_smiles") val isomericSmiles: String,
     @SerializedName("inchi") val inchi: String,
     @SerializedName("inchiKey") val inchiKey: String,
     @SerializedName("canonical_smiles") val canonicalSmiles: String,
+    @SerializedName("synonyms") val synonyms: List<String>,
     @SerializedName("description") val description: String,
     @SerializedName("image_2D_url") val image2DUri: String?,
     @SerializedName("image_3D_conformer") val image3DConformer: Image3DConformer?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
-        parcel.readInt(),
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readDouble(),
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.readString() ?: "N/A",
+        parcel.createStringArrayList() ?: emptyList(),
+        parcel.readString() ?: "No description available",
         parcel.readString(),
         parcel.readParcelable(Image3DConformer::class.java.classLoader)
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
-        parcel.writeInt(cid)
+        parcel.writeString(cid)
         parcel.writeString(inpacName)
         parcel.writeString(molecularFormula)
-        parcel.writeDouble(molecularWeight)
+        parcel.writeString(molecularWeight)
         parcel.writeString(isomericSmiles)
         parcel.writeString(inchi)
         parcel.writeString(inchiKey)
         parcel.writeString(canonicalSmiles)
+        parcel.writeStringList(synonyms)
         parcel.writeString(description)
         parcel.writeString(image2DUri)
         parcel.writeParcelable(image3DConformer, flags)
@@ -60,5 +63,12 @@ data class ChemicalCompound(
         override fun newArray(size: Int): Array<ChemicalCompound?> {
             return arrayOfNulls(size)
         }
+    }
+
+    override fun toString(): String {
+        return "ID: $id\nCID: $cid\nName: $inpacName\nMolecular Formula: $molecularFormula\n" +
+                "Molecular Weight: $molecularWeight\nIsomeric SMILES: $isomericSmiles\nInChI: $inchi\n" +
+                "InChIKey: $inchiKey\nCanonical SMILES: $canonicalSmiles\nSynonyms: ${synonyms.joinToString(", ")}\n" +
+                "Description: $description\n2D Image URL: $image2DUri\n3D Conformer: $image3DConformer"
     }
 }
