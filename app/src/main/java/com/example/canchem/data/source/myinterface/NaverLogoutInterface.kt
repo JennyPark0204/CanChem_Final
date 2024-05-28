@@ -9,5 +9,5 @@ interface NaverLogoutInterface {
     @DELETE("api/logout")
     fun logout(
         @Header("Authorization") accessToken: String?,  // Baerer AccessToken
-    ) : Call<DeleteToken>
+    ) : Call<String>
 }

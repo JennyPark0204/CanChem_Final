@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.canchem.R
 import com.example.canchem.databinding.ActivityYeonjeTestBinding
 import com.example.canchem.ui.myFavorite.MyFavoriteActivity
+import com.example.canchem.ui.searchHistory.SearchHistoryActivity
 
 class YeonjeTestActivity : AppCompatActivity() {
     lateinit var binding : ActivityYeonjeTestBinding

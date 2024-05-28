@@ -136,7 +136,8 @@
                     android:text="My Page"
                     android:textColor="@color/black"
                     android:textSize="20dp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:id="@+id/btnMyPage"/>
 
                 <View
                     android:layout_width="0dp"

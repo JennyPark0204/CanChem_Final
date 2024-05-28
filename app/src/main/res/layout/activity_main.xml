@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="100dp">
+        android:layout_marginTop="150dp">
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -46,30 +46,4 @@
             android:layout_height="0dp"
             android:layout_weight="1"/>
     </LinearLayout>
-
-
-
-    <ImageView
-        android:id="@+id/btn_google_login"
-        android:layout_width="400dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="4dp"
-        android:src="@drawable/google_login"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.604" />
-
-<!--    <TextView-->
-<!--        android:id="@+id/btn_naver_delete"-->
-<!--        android:layout_width="400dp"-->
-<!--        android:layout_height="40dp"-->
-<!--        android:layout_marginStart="132dp"-->
-<!--        android:text="연동 해제"-->
-<!--        android:textSize="30dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.257" />-->
-
 </LinearLayout>
