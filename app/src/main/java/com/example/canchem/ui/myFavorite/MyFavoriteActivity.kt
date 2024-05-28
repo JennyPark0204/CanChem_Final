@@ -249,6 +249,7 @@ class MyFavoriteActivity : AppCompatActivity() {
                 .setTitle("정말 로그아웃 하시겠습니까?")
                 .setPositiveButton("확인", object : DialogInterface.OnClickListener {
                     override fun onClick(dialog: DialogInterface, which: Int) {
+                        finish()
                         val intent = Intent(this@MyFavoriteActivity, MainActivity::class.java)
                         intent.putExtra("function", "logout")
                         startActivity(intent)
