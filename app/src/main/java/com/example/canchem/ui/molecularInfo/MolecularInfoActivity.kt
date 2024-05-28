@@ -26,6 +26,8 @@ class MolecularInfoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMolecularInfoBinding
     private lateinit var compoundImage: ImageView
     private var compound: ChemicalCompound? = null
+    private var currentStar = false
+    private var moleculeId : String? = null
     private var isStarFilled = false
     private var urlCid : String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,11 +42,7 @@ class MolecularInfoActivity : AppCompatActivity() {
         compound = intent.getParcelableExtra("compound")
         compound?.let { setText(it) }
         urlCid?.let { onWebView(it) }
-
-        binding.enlargement3D.setOnClickListener {
-            urlCid?.let { it -> joinWebGLViewer(it) }
-        }
-
+        setOnClick()
     }
 
     private fun setText(compound : ChemicalCompound)
@@ -92,29 +90,16 @@ class MolecularInfoActivity : AppCompatActivity() {
         }
 
         // 이미지뷰에 클릭 리스너 추가
-        binding.star.setOnClickListener {
-            // 현재 즐겨찾기 상태에 따라 이미지 변경
-            if (isStarFilled) {
-                binding.star.setImageResource(R.drawable.ic_star_empty)
-            } else {
-                binding.star.setImageResource(R.drawable.ic_star_filled)
-            }
-            // 상태 토글
-            isStarFilled = !isStarFilled
-        }
-
-        binding.backBt.setOnClickListener{
-            onBackPressed()
-        }
     }
+
+
 
     //즐겨찾기 여부를 먼저 확인하고 화면에 띄움
     private fun fetchBookmarkState(moleculeId: String) {
-        val bookMarkService = NetworkModule.bookmarkStateSevice
+        val bookmarkStateService = NetworkModule.bookmarkStateService
         getToken(this@MolecularInfoActivity) { token ->
             if (token != null) {
-                val token1 = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJVTEVfVVNFUiIsImlhdCI6MTcxNjg3OTQ0NiwiZXhwIjoxNzE2ODgzMDQ2fQ.hWTI6z0MSwB9qDZVEuopnTLMgrPQad8PkytOZVJi6utmeeCREmoCtROwCNLGKY8tRcNrvjiOJum0Zr1XkFJdLw"
-                val call = bookMarkService.getBookmark("Bearer ${token1}", moleculeId)
+                val call = bookmarkStateService.getBookmark(token, moleculeId)
                 call.enqueue(object : Callback<BookmarkState> {
                     override fun onResponse(call: Call<BookmarkState>, response: Response<BookmarkState>) {
                         if(response.isSuccessful){
@@ -129,6 +114,7 @@ class MolecularInfoActivity : AppCompatActivity() {
                                     binding.star.setImageResource(R.drawable.ic_star_empty)
                                 }
                             }
+                            currentStar= isStarFilled
                         }
                         else{
                             //서버통신 실패
@@ -161,5 +147,42 @@ class MolecularInfoActivity : AppCompatActivity() {
             putExtra("cid", cid)
         }
         startActivity(intent)
+    }
+    override fun onPause() {
+        super.onPause()
+        // currentStar와 isStarFilled 값이 다른 경우에만 서버에 통신
+        if (currentStar != isStarFilled) {
+            if(isStarFilled){
+                //북마크 추가
+                moleculeId?.let { fetchBookmark(this@MolecularInfoActivity, it) }
+            }
+            else{
+                //북마크 해제
+                moleculeId?.let { fetchBookmarkOff(this@MolecularInfoActivity, it) }
+            }
+        }
+    }
+
+    private fun setOnClick()
+    {
+        binding.star.setOnClickListener {
+            // 현재 즐겨찾기 상태에 따라 이미지 변경
+            if (isStarFilled) {
+                binding.star.setImageResource(R.drawable.ic_star_empty)
+            } else {
+                binding.star.setImageResource(R.drawable.ic_star_filled)
+            }
+            // 상태 토글
+            isStarFilled = !isStarFilled
+        }
+
+        binding.backBt.setOnClickListener{
+            onBackPressed()
+        }
+
+        binding.enlargement3D.setOnClickListener()
+        {
+            urlCid?.let { it1 -> joinWebGLViewer(it1) }
+        }
     }
 }
