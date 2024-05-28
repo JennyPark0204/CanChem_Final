@@ -10,7 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.canchem.databinding.ActivityMolecularInfoBinding
 
 import com.example.canchem.R
-import com.example.canchem.data.source.dataclass.BookMark.BookMark
+import com.example.canchem.data.source.dataclass.BookMark.BookmarkState
 import com.example.canchem.data.source.dataclass.Search.ChemicalCompound
 import com.example.canchem.ui.home.NetworkModule
 import com.example.canchem.ui.home.getToken
@@ -95,13 +95,13 @@ class MolecularInfoActivity : AppCompatActivity() {
 
     //즐겨찾기 여부를 먼저 확인하고 화면에 띄움
     private fun fetchBookmarkState(moleculeId: String) {
-        val bookMarkService = NetworkModule.bookMarkSevice
+        val bookMarkService = NetworkModule.bookmarkStateSevice
         getToken(this@MolecularInfoActivity) { token ->
             if (token != null) {
                 val token1 = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJVTEVfVVNFUiIsImlhdCI6MTcxNjg3OTQ0NiwiZXhwIjoxNzE2ODgzMDQ2fQ.hWTI6z0MSwB9qDZVEuopnTLMgrPQad8PkytOZVJi6utmeeCREmoCtROwCNLGKY8tRcNrvjiOJum0Zr1XkFJdLw"
                 val call = bookMarkService.getBookmark("Bearer ${token1}", moleculeId)
-                call.enqueue(object : Callback<BookMark> {
-                    override fun onResponse(call: Call<BookMark>, response: Response<BookMark>) {
+                call.enqueue(object : Callback<BookmarkState> {
+                    override fun onResponse(call: Call<BookmarkState>, response: Response<BookmarkState>) {
                         if(response.isSuccessful){
                             val bookMark = response.body()
                             bookMark?.let {
@@ -119,9 +119,8 @@ class MolecularInfoActivity : AppCompatActivity() {
                             //서버통신 실패
                             Toast.makeText(this@MolecularInfoActivity, "즐겨찾기 정보를 가져오는데 실패하였습니다.", Toast.LENGTH_SHORT).show()
                         }
-
                     }
-                    override fun onFailure(call: Call<BookMark>, t: Throwable) {
+                    override fun onFailure(call: Call<BookmarkState>, t: Throwable) {
                         Toast.makeText(this@MolecularInfoActivity, "네트워크 오류가 발생했습니다: ${t.message}", Toast.LENGTH_SHORT).show()
                     }
                 })
