@@ -24,12 +24,13 @@ class MolecularInfoActivity : AppCompatActivity() {
     private lateinit var compoundImage: ImageView
     private var compound: ChemicalCompound? = null
     private var isStarFilled = false
+    private var currentStar = false
+    private var moleculeId : String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMolecularInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         //ImageView 초기화
         compoundImage = findViewById(R.id.Image2D)
@@ -67,6 +68,7 @@ class MolecularInfoActivity : AppCompatActivity() {
             binding.description.text = "Description : ${it.description ?: "No description available"}"
             //즐겨찾기 여부 검사
             fetchBookmarkState(it.id)
+            moleculeId = it.id
         }
 
 
@@ -75,6 +77,7 @@ class MolecularInfoActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
 
         // 이미지뷰에 클릭 리스너 추가
         binding.star.setOnClickListener {
@@ -95,11 +98,10 @@ class MolecularInfoActivity : AppCompatActivity() {
 
     //즐겨찾기 여부를 먼저 확인하고 화면에 띄움
     private fun fetchBookmarkState(moleculeId: String) {
-        val bookMarkService = NetworkModule.bookmarkStateSevice
+        val bookmarkStateService = NetworkModule.bookmarkStateService
         getToken(this@MolecularInfoActivity) { token ->
             if (token != null) {
-                val token1 = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJVTEVfVVNFUiIsImlhdCI6MTcxNjg3OTQ0NiwiZXhwIjoxNzE2ODgzMDQ2fQ.hWTI6z0MSwB9qDZVEuopnTLMgrPQad8PkytOZVJi6utmeeCREmoCtROwCNLGKY8tRcNrvjiOJum0Zr1XkFJdLw"
-                val call = bookMarkService.getBookmark("Bearer ${token1}", moleculeId)
+                val call = bookmarkStateService.getBookmark(token, moleculeId)
                 call.enqueue(object : Callback<BookmarkState> {
                     override fun onResponse(call: Call<BookmarkState>, response: Response<BookmarkState>) {
                         if(response.isSuccessful){
@@ -114,6 +116,7 @@ class MolecularInfoActivity : AppCompatActivity() {
                                     binding.star.setImageResource(R.drawable.ic_star_empty)
                                 }
                             }
+                            currentStar= isStarFilled
                         }
                         else{
                             //서버통신 실패
@@ -124,6 +127,20 @@ class MolecularInfoActivity : AppCompatActivity() {
                         Toast.makeText(this@MolecularInfoActivity, "네트워크 오류가 발생했습니다: ${t.message}", Toast.LENGTH_SHORT).show()
                     }
                 })
+            }
+        }
+    }
+    override fun onPause() {
+        super.onPause()
+        // currentStar와 isStarFilled 값이 다른 경우에만 서버에 통신
+        if (currentStar != isStarFilled) {
+            if(isStarFilled){
+                //북마크 추가
+                moleculeId?.let { fetchBookmark(this@MolecularInfoActivity, it) }
+            }
+            else{
+                //북마크 해제
+                moleculeId?.let { fetchBookmarkOff(this@MolecularInfoActivity, it) }
             }
         }
     }

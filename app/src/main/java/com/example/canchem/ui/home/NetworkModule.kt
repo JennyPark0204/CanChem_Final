@@ -1,6 +1,7 @@
 package com.example.canchem.ui.home
 
 
+import com.example.canchem.data.source.myinterface.BookMark.BookmarkOffService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.example.canchem.data.source.myinterface.Search.MoleculeApiService
@@ -16,6 +17,7 @@ object NetworkModule {
         .build()
 
     val moleculeApiService: MoleculeApiService = retrofit.create(MoleculeApiService::class.java)
-    val bookmarkStateSevice: BookmarkStateService = retrofit.create(BookmarkStateService::class.java)
+    val bookmarkStateService: BookmarkStateService = retrofit.create(BookmarkStateService::class.java)
     val bookmarkService: BookmarkService = retrofit.create(BookmarkService::class.java)
+    val bookmarkOffService: BookmarkOffService = retrofit.create(BookmarkOffService::class.java)
 }
