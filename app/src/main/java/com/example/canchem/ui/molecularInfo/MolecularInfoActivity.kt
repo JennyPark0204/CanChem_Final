@@ -55,6 +55,7 @@ class MolecularInfoActivity : AppCompatActivity() {
                 compoundImage.setImageResource(R.drawable.ic_no_image)
             }
             urlCid = it.cid
+            moleculeId = it.id
 
             binding.CompoundName.text = it.synonyms?.firstOrNull() ?: "Unknown"
             binding.cid.text = "CID : ${it.cid ?: "N/A"}"
