@@ -23,11 +23,13 @@ import android.widget.TextView
 import android.graphics.Typeface
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.example.canchem.ui.molecularInfo.MolecularInfoActivity
 
 class SearchResultActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchResultBinding
     private lateinit var adapter: CompoundAdapter
+    private lateinit var drawer : DrawerLayout
 
     private var compounds: ArrayList<ChemicalCompound> = arrayListOf()
     private var totalElements = 0
