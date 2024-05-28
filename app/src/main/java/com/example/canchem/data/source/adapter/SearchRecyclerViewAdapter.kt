@@ -42,9 +42,18 @@ class SearchRecyclerViewAdapter(): RecyclerView.Adapter<SearchRecyclerViewAdapte
 
     //recyclerview가 viewholder를 가져와 데이터 연결할때 호출
     //적절한 데이터를 가져와서 그 데이터를 사용하여 뷰홀더의 레이아웃 채움
+//    override fun onBindViewHolder(holder: MyViewHolder, position: Int, payloads: MutableList<Any>) {
+//        if (payloads.isEmpty()) {
+//            super.onBindViewHolder(holder, position, payloads)
+//        } else {
+//            val visibility = payloads[0] as Int
+//            holder.setCheckboxVisibility(visibility)
+//        }
+//    }
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(datalist.searchList[position])
     }
+
 
     inner class MyViewHolder(private val binding: ItemSearchBinding): RecyclerView.ViewHolder(binding.root) {
 
@@ -104,11 +113,10 @@ class SearchRecyclerViewAdapter(): RecyclerView.Adapter<SearchRecyclerViewAdapte
 //                binding.btnChecked.isChecked = newCheckedState // 반전된 상태로 설정합니다.
 //                SearchHistoryActivity.setIsChecked(newCheckedState, mData!!.id) // 변경된 상태를 전달합니다.
 //            }
-            fun setCheckBox(){
-                binding.btnChecked.visibility = View.VISIBLE
-            }
+
 
         }
+
         //id값 받아서 SearchData를 return해줌
 //        fun getSearchData(id : String) : MutableList<SearchData> {
 //            val list = mutableListOf<SearchData>()

@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -19,7 +20,9 @@ import com.example.canchem.ui.home.SearchActivity
 import com.example.canchem.data.source.myinterface.DeleteAllMyFavoriteInterface
 import com.example.canchem.data.source.dataclass.FavoriteDataList
 import com.example.canchem.data.source.adapter.FavoriteRecyclerViewAdapter
+import com.example.canchem.data.source.myinterface.DeleteOneStarInterface
 import com.example.canchem.data.source.myinterface.MyFavoriteInterface
+import com.example.canchem.data.source.util.UserId
 import com.example.canchem.databinding.ActivityMyFavoriteBinding
 import com.example.canchem.ui.main.MainActivity
 import com.example.canchem.ui.searchHistory.SearchHistoryActivity
@@ -66,7 +69,6 @@ class MyFavoriteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMyFavoriteBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         adapter = FavoriteRecyclerViewAdapter() //어댑터 객체 만듦
         val drawer = binding.myFavorite
 
@@ -103,6 +105,23 @@ class MyFavoriteActivity : AppCompatActivity() {
 //                                mDatas.favoriteList.remove(mDatas.favoriteList.get(i.toInt()))
                                 idList.forEach { id ->
                                     mDatas.favoriteList.removeAll { it.id == id }
+                                    val retrofit2 = Retrofit.Builder()
+                                        .baseUrl("http://$ip:8080/")
+                                        .addConverterFactory(ScalarsConverterFactory.create()) //kotlin to json(역 일수도)
+                                        .build()
+                                    val myFavoriteDelete = retrofit.create(DeleteOneStarInterface::class.java)
+                                    val call2 = myFavoriteDelete.deleteStar(accessToken, id)
+                                    call2.enqueue(object : Callback<String> {
+                                        override fun onResponse(call: Call<String>, response: Response<String>) { //요청성공시
+                                            if (response.isSuccessful) {
+                                                Log.d("삭제삭제", "굿")
+                                            }
+                                        }
+                                        override fun onFailure(call: Call<String>, t: Throwable) { //요청실패시
+                                            Toast.makeText(this@MyFavoriteActivity, "SearchHistoryActivity Server cannot 통신", Toast.LENGTH_SHORT).show()
+                                            Log.e("call error", t.toString())
+                                        }
+                                    })
                                 }
                             }
                             recyclerView(mDatas)
@@ -213,19 +232,18 @@ class MyFavoriteActivity : AppCompatActivity() {
             binding.btnDeleteAll.isEnabled = true // 사이드 바 열렸을 경우 원래 액티비티의 버튼 클릭 활성화
             //여기서 binding.btnDeleteAll.isEnabled = true처럼 활성화 해야 할 버튼들을 추가하기
         }
-        // My Page 열기 버튼 클릭시
-        findViewById<ImageView>(R.id.btnOpenDown).setOnClickListener{
-            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
-            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
-            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
-            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
-        }
-        // My Page 닫기 버튼 클릭시
-        findViewById<ImageView>(R.id.btnCloseUp).setOnClickListener{
-            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
-            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
-            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
-            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
+        findViewById<LinearLayout>(R.id.btnMyPage).setOnClickListener{
+            if(findViewById<ImageView>(R.id.btnOpenDown).visibility == View.VISIBLE){
+                findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
+                findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
+                findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
+                findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
+            }else{
+                findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
+                findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
+                findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
+                findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
+            }
         }
         // 회원탈퇴 클릭시
         findViewById<TextView>(R.id.btnSignout).setOnClickListener{

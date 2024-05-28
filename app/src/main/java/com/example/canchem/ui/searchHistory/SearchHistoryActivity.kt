@@ -7,9 +7,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -22,6 +24,7 @@ import com.example.canchem.data.source.dataclass.SearchDataList
 import com.example.canchem.data.source.myinterface.SearchHistoryInterface
 import com.example.canchem.data.source.adapter.SearchRecyclerViewAdapter
 import com.example.canchem.databinding.ActivitySearchHistoryBinding
+import com.example.canchem.databinding.ItemSearchBinding
 import com.example.canchem.ui.main.MainActivity
 import com.example.canchem.ui.myFavorite.MyFavoriteActivity
 import com.google.firebase.database.DataSnapshot
@@ -183,12 +186,13 @@ class SearchHistoryActivity : AppCompatActivity(){
 
         // 검색기록 선택삭제 클릭시
         binding.btnDeleteSome.setOnClickListener{
-            findViewById<CheckBox>(R.id.btnChecked).visibility = View.VISIBLE
+//            findViewById<CheckBox>(R.id.btnChecked).visibility = View.VISIBLE
             binding.btnDeleteAll.visibility = View.GONE
             binding.btnDeleteSome.visibility = View.GONE
             binding.btnDeleteSomeYes.visibility = View.VISIBLE
             binding.btnDeleteSomeNo.visibility = View.VISIBLE
             findViewById<ImageView>(R.id.btnX).visibility = View.GONE
+            adapter.changeItemsVisibility(View.VISIBLE)
         }
 
         // 검색기록 선택삭제 중 삭제버튼 클릭시
@@ -215,13 +219,6 @@ class SearchHistoryActivity : AppCompatActivity(){
             binding.btnDeleteSomeNo.visibility = View.GONE
         }
 
-        // 실험코드
-//        for(i in idList){
-//            idList.forEach { id ->
-//                mDatas.searchList.removeAll { it.id == id }
-//            }
-//        }
-//        recyclerView(mDatas)
         // side menu. 여기부터 아래 코드는 모든 액티비티에 포함됨.
         // 메뉴 클릭시
         binding.btnMenu.setOnClickListener {
@@ -235,19 +232,18 @@ class SearchHistoryActivity : AppCompatActivity(){
             binding.btnDeleteAll.isEnabled = true
             binding.btnDeleteSome.isEnabled = true
         }
-        // My Page 열기 버튼 클릭시
-        findViewById<ImageView>(R.id.btnOpenDown).setOnClickListener{
-            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
-            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
-            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
-            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
-        }
-        // My Page 닫기 버튼 클릭시
-        findViewById<ImageView>(R.id.btnCloseUp).setOnClickListener{
-            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
-            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
-            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
-            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
+        findViewById<LinearLayout>(R.id.btnMyPage).setOnClickListener{
+            if(findViewById<ImageView>(R.id.btnOpenDown).visibility == View.VISIBLE){
+                findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
+                findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
+                findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
+                findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
+            }else{
+                findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
+                findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
+                findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
+                findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
+            }
         }
         // 회원탈퇴 클릭시
         findViewById<TextView>(R.id.btnSignout).setOnClickListener{
