@@ -110,13 +110,12 @@
                         android:padding="10dp"
                         android:src="@drawable/ic_no_image" />
 
-                    <ImageView
+                    <WebView
                         android:id="@+id/Image3D"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:padding="10dp"
-                        android:src="@drawable/ic_no_image" />
+                        android:padding="10dp" />
 
                 </LinearLayout>
 
@@ -198,6 +197,11 @@
                     android:textSize="17sp"
                     android:layout_marginBottom="7dp"
                     android:text="텍스트뷰 10" />
+                <Button
+                    android:id="@+id/enlargement3D"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/readinglasse" />
 
             </LinearLayout>
         </LinearLayout>
