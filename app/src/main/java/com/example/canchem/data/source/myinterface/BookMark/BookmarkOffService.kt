@@ -6,6 +6,6 @@ import retrofit2.http.Path
 import retrofit2.Call
 
 interface BookmarkOffService {
-    @DELETE("api/save/bookmark/{moleculeId}")
+    @DELETE("api/off/bookmark/{moleculeId}")
     fun BookmarkOff(@Header("Authorization") token:String, @Path("moleculeId") moleculeId: String):Call<Unit>
 }
