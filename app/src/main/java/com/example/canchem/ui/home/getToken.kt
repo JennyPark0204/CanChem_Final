@@ -11,6 +11,7 @@ fun getToken(context: Context, callback: (String?) -> Unit) {
     val database = FirebaseDatabase.getInstance()
     val tokenInFirebase = database.getReference("Token")
 
+
     tokenInFirebase.addValueEventListener(object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             // Token 값 읽어오기
