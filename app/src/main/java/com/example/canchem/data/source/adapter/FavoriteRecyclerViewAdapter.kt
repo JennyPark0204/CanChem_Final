@@ -1,11 +1,15 @@
 package com.example.canchem.data.source.adapter
 
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.canchem.data.source.dataclass.FavoriteData
 import com.example.canchem.data.source.dataclass.FavoriteDataList
 import com.example.canchem.databinding.ItemFavoriteBinding
+import com.example.canchem.ui.main.MainActivity
+import com.example.canchem.ui.molecularInfo.MolecularInfoActivity
 import com.example.canchem.ui.myFavorite.MyFavoriteActivity
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -38,6 +42,7 @@ class FavoriteRecyclerViewAdapter: RecyclerView.Adapter<FavoriteRecyclerViewAdap
         var isBtnStarTrue = true // 즐겨찾기 해제인지 아닌지 판단
 
         init {
+            // 별 버튼 클릭시
             binding.btnStar.setOnClickListener {
                 if(isBtnStarTrue){ // 즐겨찾기 해제
                     binding.btnStar.isChecked = false
@@ -49,7 +54,12 @@ class FavoriteRecyclerViewAdapter: RecyclerView.Adapter<FavoriteRecyclerViewAdap
                     MyFavoriteActivity.setIsBtnStar(isBtnStarTrue, mData!!.id)
                 }
             }
-
+            // 텍스트 클릭시
+            binding.favoriteText.setOnClickListener{
+                val intent = Intent(itemView.context, MolecularInfoActivity::class.java)
+                intent.putExtra("chemId", mData?.chem_id)
+                itemView.context.startActivity(intent)
+            }
         }
 
 
