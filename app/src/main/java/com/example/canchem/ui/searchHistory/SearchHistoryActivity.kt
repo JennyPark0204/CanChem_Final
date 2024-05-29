@@ -2,9 +2,11 @@ package com.example.canchem.ui.searchHistory
 
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.canchem.data.source.adapter.SearchRecyclerViewAdapter
+import com.example.canchem.data.source.dataclass.SearchData
 import com.example.canchem.data.source.service.GetSearchHistoryService
 import com.example.canchem.data.source.service.delete.DeleteAll
 import com.example.canchem.databinding.ActivitySearchHistoryBinding
@@ -15,6 +17,7 @@ class SearchHistoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchHistoryBinding
     private lateinit var adapter: SearchRecyclerViewAdapter
     private var token: String = ""
+    private var searchDataList: List<SearchData> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +31,8 @@ class SearchHistoryActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = SearchRecyclerViewAdapter(this, token, searchDataList)
+        binding.recyclerView.adapter = adapter
     }
 
     private fun fetchSearchHistory() {
@@ -38,8 +43,8 @@ class SearchHistoryActivity : AppCompatActivity() {
                 searchHistoryService.getSearchHistory(
                     token,
                     { searchDataList ->
-                        adapter = SearchRecyclerViewAdapter(this, token, searchDataList)
-                        binding.recyclerView.adapter = adapter
+                        this.searchDataList = searchDataList
+                        adapter.updateData(searchDataList)
                     },
                     {
                         showToast("검색 기록이 없습니다.")
@@ -54,23 +59,36 @@ class SearchHistoryActivity : AppCompatActivity() {
     private fun setupDeleteButtons() {
         binding.btnDeleteAll.setOnClickListener {
             if (token.isNotEmpty()) {
-                // 전체 삭제 요청
-                val deleteAllService = DeleteAll(this)
-                deleteAllService.deleteAllSearchHistory(
-                    token,
-                    {
-                        showToast("전체 검색 기록이 삭제되었습니다.")
-                        // 화면 갱신
-                        fetchSearchHistory()
-                    },
-                    { errorMessage ->
-                        showToast(errorMessage)
-                    }
-                )
+                showDeleteConfirmationDialog()
             } else {
                 showToast("토큰 값 오류")
             }
         }
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("전체 삭제")
+            .setMessage("정말로 모든 검색 기록을 삭제하시겠습니까?")
+            .setPositiveButton("예") { _, _ -> deleteAllSearchHistory() }
+            .setNegativeButton("아니오", null)
+            .show()
+    }
+
+    private fun deleteAllSearchHistory() {
+        val deleteAllService = DeleteAll(this)
+        deleteAllService.deleteAllSearchHistory(
+            token,
+            {
+                showToast("전체 검색 기록이 삭제되었습니다.")
+                // 화면 갱신
+                searchDataList = emptyList()
+                adapter.updateData(searchDataList)
+            },
+            { errorMessage ->
+                showToast(errorMessage)
+            }
+        )
     }
 
     private fun showToast(message: String) {
