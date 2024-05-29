@@ -33,7 +33,7 @@ class TokenRefreshJobService : JobService() {
         var accessToken : String?
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://$ip:8080/")
+            .baseUrl("https://26u08ezfqi.execute-api.ap-northeast-2.amazonaws.com" )
             .addConverterFactory(GsonConverterFactory.create()) //kotlin to json(역 일수도)
             .build()
 //        val refreshTokenService= retrofit.create(NewRefreshTokenInterface::class.java)
