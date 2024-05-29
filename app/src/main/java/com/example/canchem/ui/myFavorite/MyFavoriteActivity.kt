@@ -45,8 +45,14 @@ class MyFavoriteActivity : AppCompatActivity() {
     private lateinit var adapter: FavoriteRecyclerViewAdapter
     private lateinit var binding: ActivityMyFavoriteBinding
     lateinit var mDatas : FavoriteDataList // 즐겨찾기 데이터 리스트 변수
+    private var backpressedTime: Long = 0
+    private var toastClickTime : Long = 0
 
+    private lateinit var drawer : DrawerLayout
     companion object{
+        // finish()구현을 위한 액티비티 변수
+        var myFavoriteActivity : MyFavoriteActivity ?= null
+
         private var instance: MyFavoriteActivity? = null
 //        private var id = "-100"
         private val idList = ArrayList<String>()
@@ -71,7 +77,10 @@ class MyFavoriteActivity : AppCompatActivity() {
         binding = ActivityMyFavoriteBinding.inflate(layoutInflater)
         setContentView(binding.root)
         adapter = FavoriteRecyclerViewAdapter() //어댑터 객체 만듦
-        val drawer = binding.myFavorite
+        drawer = binding.myFavorite
+
+        // 자신의 액티비티 담기
+        myFavoriteActivity = this
 
         //firebase에 저장된 토큰 가져오기
         val database = Firebase.database
@@ -147,82 +156,86 @@ class MyFavoriteActivity : AppCompatActivity() {
 
         // 즐겨찾기 전체 삭제. 서버에 전송하는 코드 작성해야 함
         binding.btnDeleteAll.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle("전체 삭제하시겠습니까?")
-                .setPositiveButton("확인", object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface, which: Int) {
-                        val database = Firebase.database
-                        val tokenInFirebase = database.getReference("Token")
-                        var accessToken: String? = null
-                        tokenInFirebase.child(UserId.userId!!)
-                            .addValueEventListener(object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    // This method is called once with the initial value and again
-                                    // whenever data at this location is updated.
-                                    accessToken = snapshot.getValue().toString()
+            if(::mDatas.isInitialized){
+                AlertDialog.Builder(this)
+                    .setTitle("전체 삭제하시겠습니까?")
+                    .setPositiveButton("확인", object : DialogInterface.OnClickListener {
+                        override fun onClick(dialog: DialogInterface, which: Int) {
+                            val database = Firebase.database
+                            val tokenInFirebase = database.getReference("Token")
+                            var accessToken: String? = null
+                            tokenInFirebase.child(UserId.userId!!)
+                                .addValueEventListener(object : ValueEventListener {
+                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                        // This method is called once with the initial value and again
+                                        // whenever data at this location is updated.
+                                        accessToken = snapshot.getValue().toString()
 //                Toast.makeText(this@SearchHistoryActivity,"파이어베이스 성공!", Toast.LENGTH_SHORT).show()
 
-                                    // retrofit 변수 생성
-                                    val retrofit = Retrofit.Builder()
-                                        .baseUrl("http://$ip:8080/")
-                                        .addConverterFactory(ScalarsConverterFactory.create()) //kotlin to json(역 일수도)
-                                        .build()
+                                        // retrofit 변수 생성
+                                        val retrofit = Retrofit.Builder()
+                                            .baseUrl("http://$ip:8080/")
+                                            .addConverterFactory(ScalarsConverterFactory.create()) //kotlin to json(역 일수도)
+                                            .build()
 
-                                    // retrofit객체 생성
-                                    val deleteAllService =
-                                        retrofit.create(DeleteAllMyFavoriteInterface::class.java)
-                                    val call = deleteAllService.deleteAll(accessToken)
+                                        // retrofit객체 생성
+                                        val deleteAllService =
+                                            retrofit.create(DeleteAllMyFavoriteInterface::class.java)
+                                        val call = deleteAllService.deleteAll(accessToken)
 
 
-                                    call.enqueue(object : Callback<String> {
-                                        override fun onResponse(
-                                            call: Call<String>,
-                                            response: Response<String>
-                                        ) { //요청성공시
-                                            if (response.isSuccessful) {
-                                                mDatas.favoriteList.clear()
-                                                recyclerView(mDatas)
+                                        call.enqueue(object : Callback<String> {
+                                            override fun onResponse(
+                                                call: Call<String>,
+                                                response: Response<String>
+                                            ) { //요청성공시
+                                                if (response.isSuccessful) {
+                                                    mDatas.favoriteList.clear()
+                                                    recyclerView(mDatas)
+                                                    Toast.makeText(
+                                                        this@MyFavoriteActivity,
+                                                        "전체 삭제 완료",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                } else {
+//                    Toast.makeText(this@SearchHistoryActivity, "SearchHistoryActivity Error", Toast.LENGTH_SHORT).show()
+                                                }
+                                            }
+
+                                            override fun onFailure(
+                                                call: Call<String>,
+                                                t: Throwable
+                                            ) { //요청실패시
                                                 Toast.makeText(
                                                     this@MyFavoriteActivity,
-                                                    "전체 삭제 완료",
+                                                    "SearchHistoryActivity Server cannot 통신",
                                                     Toast.LENGTH_SHORT
                                                 ).show()
-                                            } else {
-//                    Toast.makeText(this@SearchHistoryActivity, "SearchHistoryActivity Error", Toast.LENGTH_SHORT).show()
+                                                Log.e("call error", t.toString())
                                             }
-                                        }
+                                        })
+                                    }
 
-                                        override fun onFailure(
-                                            call: Call<String>,
-                                            t: Throwable
-                                        ) { //요청실패시
-                                            Toast.makeText(
-                                                this@MyFavoriteActivity,
-                                                "SearchHistoryActivity Server cannot 통신",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                            Log.e("call error", t.toString())
-                                        }
-                                    })
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {
-                                    Log.w(
-                                        ContentValues.TAG,
-                                        "Failed to read value.",
-                                        error.toException()
-                                    )
-                                }
-                            })
-                    }
-                })
-                .setNegativeButton("취소", object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface, which: Int) {
-                        Log.d("MyTag", "negative")
-                    }
-                })
-                .create()
-                .show()
+                                    override fun onCancelled(error: DatabaseError) {
+                                        Log.w(
+                                            ContentValues.TAG,
+                                            "Failed to read value.",
+                                            error.toException()
+                                        )
+                                    }
+                                })
+                        }
+                    })
+                    .setNegativeButton("취소", object : DialogInterface.OnClickListener {
+                        override fun onClick(dialog: DialogInterface, which: Int) {
+                            Log.d("MyTag", "negative")
+                        }
+                    })
+                    .create()
+                    .show()
+            }else{
+                Toast.makeText(this@MyFavoriteActivity,"전체 삭제할 데이터가 없습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
 
         drawer.addDrawerListener(object : DrawerLayout.DrawerListener {
@@ -289,6 +302,7 @@ class MyFavoriteActivity : AppCompatActivity() {
                         val intent = Intent(this@MyFavoriteActivity, MainActivity::class.java)
                         intent.putExtra("function", "signout")
                         startActivity(intent)
+                        finish()
                     }
                 })
                 .setNegativeButton("취소", object : DialogInterface.OnClickListener {
@@ -310,6 +324,7 @@ class MyFavoriteActivity : AppCompatActivity() {
                         Log.d("로그아웃", "으로 메인 넘어감")
                         intent.putExtra("function", "logout")
                         startActivity(intent)
+                        finish()
                     }
                 })
                 .setNegativeButton("취소", object : DialogInterface.OnClickListener {
@@ -329,21 +344,28 @@ class MyFavoriteActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.btnSearchHistory).setOnClickListener{
             val intent = Intent(this, SearchHistoryActivity::class.java)
             startActivity(intent)
+            finish()
         }
         // 홈버튼 클릭시
         findViewById<ImageView>(R.id.btnHome).setOnClickListener{
             val intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 
     @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
-        val drawer = binding.myFavorite
         if(drawer.isDrawerOpen(Gravity.RIGHT)){
             drawer.closeDrawer(Gravity.RIGHT)
         }else{
-            finish()
+            if (System.currentTimeMillis() > backpressedTime + 2000) {
+                backpressedTime = System.currentTimeMillis();
+                Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
+            } else if (System.currentTimeMillis() <= backpressedTime + 2000) {
+                finish()
+            }
+
         }
     }
 
