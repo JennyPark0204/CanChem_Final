@@ -527,12 +527,13 @@ class SearchActivity : AppCompatActivity() {
         }
         // 검색기록 클릭시
         findViewById<TextView>(R.id.btnSearchHistory).setOnClickListener{
+//            val intent = Intent(this, SearchHistoryActivity::class.java) //이 부분은 태웅님이 액티비티 다 만들면 수정
+//            startActivity(intent)
             drawer.closeDrawer(Gravity.RIGHT)
         }
         // 홈버튼 클릭시
         findViewById<ImageView>(R.id.btnHome).setOnClickListener{
-            val intent = Intent(this, SearchActivity::class.java)
-            startActivity(intent)
+            drawer.closeDrawer(Gravity.RIGHT)
         }
     }
 

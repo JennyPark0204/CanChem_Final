@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         enableEdgeToEdge()  // 상태표시줄 투명하게 만듦
         // 만약 시작부터 로그인이 안 된다면, 밑의 주석을 풀고 실행후 다시 주석처리 후에 실행.
-//        clearLoginState()
+        clearLoginState()
 
         val savedState = getSavedLoginState()
 
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         }
         if (savedState == "OK") {
             // 로그인 상태가 ok인 경우 처리
-            val intent = Intent(this@MainActivity, MyFavoriteActivity::class.java)
+            val intent = Intent(this@MainActivity, SearchActivity::class.java)
             startActivity(intent)
         }
 
@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                     NidOAuthLogin().callProfileApi(nidProfileCallback)
 
                     Log.i("intent", intent.toString())
-                    val intent = Intent(this@MainActivity, YeonjeTestActivity::class.java)
+                    val intent = Intent(this@MainActivity, SearchActivity::class.java)
                     Log.d("yeonje액티비티", "로 ㄱㄱ")
                     startActivity(intent)
                 }
