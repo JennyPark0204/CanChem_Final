@@ -27,6 +27,7 @@ import com.example.canchem.ui.home.SearchActivity
 import com.example.canchem.ui.home.getToken
 import com.example.canchem.ui.main.MainActivity
 import com.example.canchem.ui.myFavorite.MyFavoriteActivity
+import com.example.canchem.ui.searchHistory.SearchHistoryActivity
 import com.example.canchem.ui.webView.WebGLViewr
 import com.squareup.picasso.Picasso
 import retrofit2.Callback
@@ -246,6 +247,7 @@ class MolecularInfoActivity : AppCompatActivity() {
                         val intent = Intent(this@MolecularInfoActivity, MainActivity::class.java)
                         intent.putExtra("function", "signout")
                         startActivity(intent)
+                        finish()
                     }
                 })
                 .setNegativeButton("취소", object : DialogInterface.OnClickListener {
@@ -265,6 +267,7 @@ class MolecularInfoActivity : AppCompatActivity() {
                         val intent = Intent(this@MolecularInfoActivity, MainActivity::class.java)
                         intent.putExtra("function", "logout")
                         startActivity(intent)
+                        finish()
                     }
                 })
                 .setNegativeButton("취소", object : DialogInterface.OnClickListener {
@@ -283,7 +286,8 @@ class MolecularInfoActivity : AppCompatActivity() {
         }
         // 검색기록 클릭시
         findViewById<TextView>(R.id.btnSearchHistory).setOnClickListener{
-            drawer.closeDrawer(Gravity.RIGHT)
+//            val intent = Intent(this, SearchHistoryActivity::class.java)
+//            startActivity(intent)
         }
         // 홈버튼 클릭시
         findViewById<ImageView>(R.id.btnHome).setOnClickListener{

@@ -42,6 +42,7 @@ import com.example.canchem.data.source.myinterface.Search.ImageUploadService
 import com.example.canchem.data.source.myinterface.Search.MoleculeApiService
 import com.example.canchem.ui.main.MainActivity
 import com.example.canchem.ui.myFavorite.MyFavoriteActivity
+import com.example.canchem.ui.searchHistory.SearchHistoryActivity
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -60,6 +61,7 @@ import java.util.Date
 
 class SearchActivity : AppCompatActivity() {
     companion object{
+        var searchActivity : SearchActivity ?= null
         //카메라 앱을 사진 찍기 위한 요청 코드
         const val REQUEST_IMAGE_CAPTURE = 1
         //카메라 앱의 권한을 위한 요청 코드
@@ -71,11 +73,14 @@ class SearchActivity : AppCompatActivity() {
     }
     private lateinit var drawer: DrawerLayout
     private lateinit var binding:ActivitySearchBinding
+    private var backpressedTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        searchActivity = this
 
         drawer = binding.search
         setOnClick()
@@ -490,6 +495,7 @@ class SearchActivity : AppCompatActivity() {
                         val intent = Intent(this@SearchActivity, MainActivity::class.java)
                         intent.putExtra("function", "signout")
                         startActivity(intent)
+                        finish()
                     }
                 })
                 .setNegativeButton("취소", object : DialogInterface.OnClickListener {
@@ -509,6 +515,7 @@ class SearchActivity : AppCompatActivity() {
                         val intent = Intent(this@SearchActivity, MainActivity::class.java)
                         intent.putExtra("function", "logout")
                         startActivity(intent)
+                        finish()
                     }
                 })
                 .setNegativeButton("취소", object : DialogInterface.OnClickListener {
@@ -527,12 +534,12 @@ class SearchActivity : AppCompatActivity() {
         }
         // 검색기록 클릭시
         findViewById<TextView>(R.id.btnSearchHistory).setOnClickListener{
-            drawer.closeDrawer(Gravity.RIGHT)
+//            val intent = Intent(this, SearchHistoryActivity::class.java)
+//            startActivity(intent)
         }
         // 홈버튼 클릭시
         findViewById<ImageView>(R.id.btnHome).setOnClickListener{
-            val intent = Intent(this, SearchActivity::class.java)
-            startActivity(intent)
+            drawer.closeDrawer(Gravity.RIGHT)
         }
     }
 
@@ -541,7 +548,13 @@ class SearchActivity : AppCompatActivity() {
         if(drawer.isDrawerOpen(Gravity.RIGHT)){
             drawer.closeDrawer(Gravity.RIGHT)
         }else{
-            finish()
+            if (System.currentTimeMillis() > backpressedTime + 2000) {
+                backpressedTime = System.currentTimeMillis();
+                Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
+            } else if (System.currentTimeMillis() <= backpressedTime + 2000) {
+                finish()
+            }
+
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.example.canchem.ui.searchResult
 
+import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -22,9 +24,15 @@ import retrofit2.Response
 import android.widget.TextView
 import android.graphics.Typeface
 import android.util.TypedValue
+import android.view.Gravity
+import android.view.View
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.example.canchem.ui.home.SearchActivity
+import com.example.canchem.ui.main.MainActivity
 import com.example.canchem.ui.molecularInfo.MolecularInfoActivity
+import com.example.canchem.ui.myFavorite.MyFavoriteActivity
 
 class SearchResultActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchResultBinding
@@ -36,12 +44,16 @@ class SearchResultActivity : AppCompatActivity() {
     private var totalPages = 0
     private var currentPage = 0
     private var searchQuery: String? = null
+    private var searchResultActivity: SearchResultActivity ?= null
+    private var backpressedTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchResultBinding.inflate(layoutInflater)
-        enableEdgeToEdge()
         setContentView(binding.root)
+
+        drawer = binding.searchResult
+        searchResultActivity = this
 
         // Intent로부터 데이터 추출
         totalElements = intent.getIntExtra("totalElements", 0)
@@ -54,6 +66,8 @@ class SearchResultActivity : AppCompatActivity() {
 
         // 페이징 처리
         setupPagingButtons()
+
+        setOnClick()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.searchResult)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -180,6 +194,109 @@ class SearchResultActivity : AppCompatActivity() {
                     }
                 })
             }
+        }
+    }
+    private fun setOnClick(){
+        //메뉴
+        binding.btnMenu.setOnClickListener{
+            drawer.openDrawer(Gravity.RIGHT)
+        }
+        // x버튼 클릭시
+        findViewById<ImageView>(R.id.btnX).setOnClickListener{
+            drawer.closeDrawer(Gravity.RIGHT)
+        }
+        // My Page 열기 버튼 클릭시
+        findViewById<ImageView>(R.id.btnOpenDown).setOnClickListener{
+            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
+            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
+        }
+        // My Page 닫기 버튼 클릭시
+        findViewById<ImageView>(R.id.btnCloseUp).setOnClickListener{
+            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
+            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
+            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
+            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
+        }
+        // My Page 글씨로 열고 닫기
+        findViewById<TextView>(R.id.btnMyPage).setOnClickListener{
+            if(findViewById<ImageView>(R.id.btnOpenDown).visibility == View.VISIBLE){
+                findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
+                findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
+                findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
+                findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
+            }else{
+                findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
+                findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
+                findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
+                findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
+            }
+        }
+        // 회원탈퇴 클릭시
+        findViewById<TextView>(R.id.btnSignout).setOnClickListener{
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("정말 탈퇴하시겠습니까?")
+                .setMessage("탈퇴하실 경우, 모든 정보가 삭제됩니다.")
+                .setPositiveButton("확인", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        val intent = Intent(this@SearchResultActivity, MainActivity::class.java)
+                        intent.putExtra("function", "signout")
+                        startActivity(intent)
+                        finish()
+                    }
+                })
+                .setNegativeButton("취소", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        Log.d("MyTag", "negative")
+                    }
+                })
+                .create()
+                .show()
+        }
+        // 로그아웃 클릭시
+        findViewById<TextView>(R.id.btnLogout).setOnClickListener{
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("정말 로그아웃 하시겠습니까?")
+                .setPositiveButton("확인", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        val intent = Intent(this@SearchResultActivity, MainActivity::class.java)
+                        intent.putExtra("function", "logout")
+                        startActivity(intent)
+                        finish()
+                    }
+                })
+                .setNegativeButton("취소", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        Log.d("MyTag", "negative")
+                    }
+                })
+                .create()
+                .show()
+
+        }
+        // 즐겨찾기 클릭시
+        findViewById<TextView>(R.id.btnMyFavorite).setOnClickListener{
+            val intent = Intent(this, MyFavoriteActivity::class.java)
+            startActivity(intent)
+        }
+        // 검색기록 클릭시
+        findViewById<TextView>(R.id.btnSearchHistory).setOnClickListener{
+//            val intent = Intent(this, SearchHistoryActivity::class.java)
+//            startActivity(intent)
+        }
+        // 홈버튼 클릭시
+        findViewById<ImageView>(R.id.btnHome).setOnClickListener{
+            var intent = Intent(this, SearchActivity::class.java)
+            startActivity(intent)
+        }
+    }
+    @SuppressLint("MissingSuperCall")
+    override fun onBackPressed() {
+        if(drawer.isDrawerOpen(Gravity.RIGHT)){
+            drawer.closeDrawer(Gravity.RIGHT)
+        }else{
+            finish()
         }
     }
 }
