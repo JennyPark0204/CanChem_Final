@@ -30,19 +30,18 @@ import android.util.Base64
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.canchem.R
-import com.example.canchem.data.source.dataclass.Search.PredictionResult
 import com.example.canchem.data.source.dataclass.Search.ChemicalCompound
 import com.example.canchem.data.source.myinterface.Search.ImageUploadService
-import com.example.canchem.data.source.myinterface.Search.MoleculeApiService
 import com.example.canchem.ui.main.MainActivity
 import com.example.canchem.ui.myFavorite.MyFavoriteActivity
-import com.example.canchem.ui.searchHistory.SearchHistoryActivity
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -74,6 +73,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var drawer: DrawerLayout
     private lateinit var binding:ActivitySearchBinding
     private var backpressedTime: Long = 0
+    private var state: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,14 +83,8 @@ class SearchActivity : AppCompatActivity() {
         searchActivity = this
 
         drawer = binding.search
+
         setOnClick()
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.search)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
 
         //입력 필터링 적용
         val editText = binding.searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
@@ -99,56 +93,13 @@ class SearchActivity : AppCompatActivity() {
         binding.searchView.maxWidth = Int.MAX_VALUE
         binding.searchView.isSubmitButtonEnabled = true
 
+        addDrawerListener()
 
-        // 검색 버튼 클릭 이벤트 처리
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                val page = 0
-                getToken(this@SearchActivity){ token->
-                    if(token!=null){
-                        fetchChemicalCompounds(this@SearchActivity,token, "$query", page)
-                    }
-                }
-                return false
-            }
-            override fun onQueryTextChange(newText: String?): Boolean {
-                // 검색어가 변경될 때 실행
-                return false
-            }
-        })
-
-        // 카메라 버튼 클릭시
-        binding.cameraButton.setOnClickListener {
-            //카메라 권한이 있는지 확인
-            if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
-                //카메라 앱 실행
-                startCamera()
-            }else{
-                //카메라 권한 요청
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA_PERMISSION)
-            }
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.search)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
         }
-
-        // 갤러리 버튼 클릭시
-        binding.galleryButton.setOnClickListener {
-            val pickPhotoIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            pickPhotoIntent.type = "image/*"
-            val sdkVersion = Build.VERSION.SDK_INT
-            if (pickPhotoIntent.resolveActivity(packageManager) != null) {
-                // Android 13이상 버전 퍼미션을 요청
-                if (sdkVersion >= 33) {
-                    requestGalleryPermission13(pickPhotoIntent)
-                }
-                // Android 13이전 버전 퍼미션을 요청
-                else {
-                    requestGalleryPermission10(pickPhotoIntent)
-                }
-            }
-            else {
-                Toast.makeText(this, "갤러리 앱을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
-            }
-        }
-
     }
     // 카메라, 갤러리, 크롭 등의 기능을 수행 했을 때
     @Deprecated("Deprecated in Java")
@@ -203,6 +154,150 @@ class SearchActivity : AppCompatActivity() {
             // 필터링된 문자열 반환
             filteredStringBuilder.toString()
         })
+    }
+
+    private fun setOnClick(){
+        // 검색 버튼 클릭 이벤트 처리
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                val page = 0
+                getToken(this@SearchActivity){ token->
+                    if(token!=null){
+                        fetchChemicalCompounds(this@SearchActivity,token, "$query", page)
+                    }
+                }
+                return false
+            }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // 검색어가 변경될 때 실행
+                return false
+            }
+        })
+
+        // 카메라 버튼 클릭시
+        binding.cameraButton.setOnClickListener {
+            //카메라 권한이 있는지 확인
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+                //카메라 앱 실행
+                startCamera()
+            }else{
+                //카메라 권한 요청
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA_PERMISSION)
+            }
+        }
+
+        // 갤러리 버튼 클릭시
+        binding.galleryButton.setOnClickListener {
+            val pickPhotoIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            pickPhotoIntent.type = "image/*"
+            val sdkVersion = Build.VERSION.SDK_INT
+            if (pickPhotoIntent.resolveActivity(packageManager) != null) {
+                // Android 13이상 버전 퍼미션을 요청
+                if (sdkVersion >= 33) {
+                    requestGalleryPermission13(pickPhotoIntent)
+                }
+                // Android 13이전 버전 퍼미션을 요청
+                else {
+                    requestGalleryPermission10(pickPhotoIntent)
+                }
+            }
+            else {
+                Toast.makeText(this, "갤러리 앱을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        //메뉴
+        binding.btnMenu.setOnClickListener{
+            drawer.openDrawer(Gravity.RIGHT)
+        }
+        // x버튼 클릭시
+        findViewById<ImageView>(R.id.btnX).setOnClickListener{
+            drawer.closeDrawer(Gravity.RIGHT)
+        }
+        // My Page 열기 버튼 클릭시
+        findViewById<ImageView>(R.id.btnOpenDown).setOnClickListener{
+            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
+            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
+        }
+        // My Page 닫기 버튼 클릭시
+        findViewById<ImageView>(R.id.btnCloseUp).setOnClickListener{
+            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
+            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
+            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
+            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
+        }
+        // My Page 글씨로 열고 닫기
+        findViewById<TextView>(R.id.btnMyPage).setOnClickListener{
+            if(findViewById<ImageView>(R.id.btnOpenDown).visibility == View.VISIBLE){
+                findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
+                findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
+                findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
+                findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
+            }else{
+                findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
+                findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
+                findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
+                findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
+            }
+        }
+        // 회원탈퇴 클릭시
+        findViewById<TextView>(R.id.btnSignout).setOnClickListener{
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("정말 탈퇴하시겠습니까?")
+                .setMessage("탈퇴하실 경우, 모든 정보가 삭제됩니다.")
+                .setPositiveButton("확인", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        val intent = Intent(this@SearchActivity, MainActivity::class.java)
+                        intent.putExtra("function", "signout")
+                        startActivity(intent)
+                        finish()
+                    }
+                })
+                .setNegativeButton("취소", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        Log.d("MyTag", "negative")
+                    }
+                })
+                .create()
+                .show()
+        }
+        // 로그아웃 클릭시
+        findViewById<TextView>(R.id.btnLogout).setOnClickListener{
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("정말 로그아웃 하시겠습니까?")
+                .setPositiveButton("확인", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        val intent = Intent(this@SearchActivity, MainActivity::class.java)
+                        intent.putExtra("function", "logout")
+                        startActivity(intent)
+                        finish()
+                    }
+                })
+                .setNegativeButton("취소", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        Log.d("MyTag", "negative")
+                    }
+                })
+                .create()
+                .show()
+
+        }
+        // 즐겨찾기 클릭시
+        findViewById<TextView>(R.id.btnMyFavorite).setOnClickListener{
+            val intent = Intent(this, MyFavoriteActivity::class.java)
+            startActivity(intent)
+        }
+        // 검색기록 클릭시
+        findViewById<TextView>(R.id.btnSearchHistory).setOnClickListener{
+//            val intent = Intent(this, SearchHistoryActivity::class.java)
+//            startActivity(intent)
+        }
+        // 홈버튼 클릭시
+        findViewById<ImageView>(R.id.btnHome).setOnClickListener{
+            drawer.closeDrawer(Gravity.RIGHT)
+        }
     }
 
     // 카메라로 촬영된 이미지의 파일 경로를 저장하는 프로퍼티
@@ -448,99 +543,48 @@ class SearchActivity : AppCompatActivity() {
             }
         }
     }
-    private fun setOnClick(){
-        //메뉴
-        binding.btnMenu.setOnClickListener{
-            drawer.openDrawer(Gravity.RIGHT)
-        }
-        // x버튼 클릭시
-        findViewById<ImageView>(R.id.btnX).setOnClickListener{
-            drawer.closeDrawer(Gravity.RIGHT)
-        }
-        // My Page 열기 버튼 클릭시
-        findViewById<ImageView>(R.id.btnOpenDown).setOnClickListener{
-            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
-            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
-            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
-            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
-        }
-        // My Page 닫기 버튼 클릭시
-        findViewById<ImageView>(R.id.btnCloseUp).setOnClickListener{
-            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
-            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
-            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
-            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
-        }
-        // My Page 글씨로 열고 닫기
-        findViewById<TextView>(R.id.btnMyPage).setOnClickListener{
-            if(findViewById<ImageView>(R.id.btnOpenDown).visibility == View.VISIBLE){
-                findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
-                findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
-                findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
-                findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
-            }else{
-                findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
-                findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
-                findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
-                findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
-            }
-        }
-        // 회원탈퇴 클릭시
-        findViewById<TextView>(R.id.btnSignout).setOnClickListener{
-            androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("정말 탈퇴하시겠습니까?")
-                .setMessage("탈퇴하실 경우, 모든 정보가 삭제됩니다.")
-                .setPositiveButton("확인", object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface, which: Int) {
-                        val intent = Intent(this@SearchActivity, MainActivity::class.java)
-                        intent.putExtra("function", "signout")
-                        startActivity(intent)
-                        finish()
-                    }
-                })
-                .setNegativeButton("취소", object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface, which: Int) {
-                        Log.d("MyTag", "negative")
-                    }
-                })
-                .create()
-                .show()
-        }
-        // 로그아웃 클릭시
-        findViewById<TextView>(R.id.btnLogout).setOnClickListener{
-            androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("정말 로그아웃 하시겠습니까?")
-                .setPositiveButton("확인", object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface, which: Int) {
-                        val intent = Intent(this@SearchActivity, MainActivity::class.java)
-                        intent.putExtra("function", "logout")
-                        startActivity(intent)
-                        finish()
-                    }
-                })
-                .setNegativeButton("취소", object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface, which: Int) {
-                        Log.d("MyTag", "negative")
-                    }
-                })
-                .create()
-                .show()
 
-        }
-        // 즐겨찾기 클릭시
-        findViewById<TextView>(R.id.btnMyFavorite).setOnClickListener{
-            val intent = Intent(this, MyFavoriteActivity::class.java)
-            startActivity(intent)
-        }
-        // 검색기록 클릭시
-        findViewById<TextView>(R.id.btnSearchHistory).setOnClickListener{
-//            val intent = Intent(this, SearchHistoryActivity::class.java)
-//            startActivity(intent)
-        }
-        // 홈버튼 클릭시
-        findViewById<ImageView>(R.id.btnHome).setOnClickListener{
-            drawer.closeDrawer(Gravity.RIGHT)
-        }
+    private fun addDrawerListener(){
+        drawer.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                // 드로어가 슬라이드될 때 호출됨
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+                disableSearchComponents()
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                enableSearchComponents()
+            }
+
+            override fun onDrawerStateChanged(newState: Int) {
+                // 드로어 상태가 변경될 때 호출됨
+            }
+        })
+    }
+    // 검색창과 버튼 비활성화
+    private fun disableSearchComponents() {
+        val cameraButton = findViewById<ImageButton>(R.id.cameraButton)
+        val galleryButton = findViewById<ImageButton>(R.id.galleryButton)
+        val searchView = findViewById<SearchView>(R.id.searchView)
+
+        cameraButton.isEnabled = false
+        galleryButton.isEnabled = false
+
+        searchView.findViewById<View>(androidx.appcompat.R.id.search_src_text)?.isEnabled = false // 검색창 텍스트 입력을 비활성화
+    }
+
+    // 검색창과 버튼 활성화
+    private fun enableSearchComponents() {
+        val cameraButton = findViewById<ImageButton>(R.id.cameraButton)
+        val galleryButton = findViewById<ImageButton>(R.id.galleryButton)
+        val searchView = findViewById<SearchView>(R.id.searchView)
+
+        cameraButton.isEnabled = true
+        galleryButton.isEnabled = true
+
+        searchView.findViewById<View>(androidx.appcompat.R.id.search_src_text)?.isEnabled = true
     }
 
     @SuppressLint("MissingSuperCall")
