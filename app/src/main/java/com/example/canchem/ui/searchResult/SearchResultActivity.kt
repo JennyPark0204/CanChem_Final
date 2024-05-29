@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -39,13 +38,17 @@ class SearchResultActivity : AppCompatActivity() {
     private lateinit var adapter: CompoundAdapter
     private lateinit var drawer : DrawerLayout
 
+    private lateinit var nextButton : TextView
+    private lateinit var prevButton : TextView
+
+
     private var compounds: ArrayList<ChemicalCompound> = arrayListOf()
     private var totalElements = 0
     private var totalPages = 0
     private var currentPage = 0
     private var searchQuery: String? = null
     private var searchResultActivity: SearchResultActivity ?= null
-    private var backpressedTime: Long = 0
+    private var isClickEnabled = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +72,8 @@ class SearchResultActivity : AppCompatActivity() {
 
         setOnClick()
 
+        addDrawerListener()
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.searchResult)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -85,11 +90,12 @@ class SearchResultActivity : AppCompatActivity() {
 
     private fun setupRecyclerView(){
         adapter = CompoundAdapter(this, compounds) { compound ->
-            // 아이템 클릭 시 처리할 작업
-            val intent = Intent(this@SearchResultActivity, MolecularInfoActivity::class.java).apply {
-                putExtra("compound", compound)
+            if(isClickEnabled) {
+                val intent = Intent(this@SearchResultActivity, MolecularInfoActivity::class.java).apply {
+                    putExtra("compound", compound)
+                }
+                startActivity(intent)
             }
-            startActivity(intent)
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
@@ -102,7 +108,7 @@ class SearchResultActivity : AppCompatActivity() {
         val pageRange = 5 // 현재 페이지를 중심으로 표시할 페이지 범위
 
         // 이전 버튼
-        val prevButton = TextView(this).apply {
+        prevButton = TextView(this).apply {
             text = "<<"
             textSize = 16f
             setPadding(16, 16, 16, 16)
@@ -121,15 +127,15 @@ class SearchResultActivity : AppCompatActivity() {
         val endPage = minOf(startPage + pageRange, totalPages)
 
         for (i in startPage until endPage) {
-            val textView = TextView(this).apply {
+            var textView = TextView(this).apply {
                 text = (i + 1).toString()
                 textSize = 16f
                 setPadding(16, 16, 16, 16)
                 setTextColor(ContextCompat.getColor(this@SearchResultActivity, R.color.black))
                 isClickable = true
                 setOnClickListener {
-                    currentPage = i
-                    onPageTextClick(currentPage)
+                        currentPage = i
+                        onPageTextClick(currentPage)
                 }
             }
 
@@ -144,7 +150,7 @@ class SearchResultActivity : AppCompatActivity() {
         }
 
         // 다음 버튼
-        val nextButton = TextView(this).apply {
+        nextButton = TextView(this).apply {
             text = ">>"
             textSize = 16f
             setPadding(16, 16, 16, 16)
@@ -160,10 +166,12 @@ class SearchResultActivity : AppCompatActivity() {
     }
 
     private fun onPageTextClick(page: Int){
-        currentPage = page
-        setupPagingButtons() // 페이지 버튼 다시 설정
-        searchQuery?.let {
-            fetchNextPageData(it, currentPage)
+        if (isClickEnabled) {
+            currentPage = page
+            setupPagingButtons() // 페이지 버튼 다시 설정
+            searchQuery?.let {
+                fetchNextPageData(it, currentPage)
+            }
         }
     }
 
@@ -291,6 +299,40 @@ class SearchResultActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+    private fun addDrawerListener(){
+        drawer.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                // 드로어가 슬라이드될 때 호출됨
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+                disableComponents()
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                enableComponents()
+            }
+
+            override fun onDrawerStateChanged(newState: Int) {
+                // 드로어 상태가 변경될 때 호출됨
+            }
+        })
+    }
+
+    // 클릭 비활성화
+    private fun disableComponents(){
+        isClickEnabled = false
+        nextButton.isClickable = false
+        prevButton.isClickable = false
+    }
+
+    // 클릭 활성화
+    private fun enableComponents(){
+        isClickEnabled = true
+        nextButton.isClickable = true
+        prevButton.isClickable = true
+    }
+
     @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
         if(drawer.isDrawerOpen(Gravity.RIGHT)){
