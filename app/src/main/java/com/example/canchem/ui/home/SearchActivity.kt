@@ -581,8 +581,8 @@ class SearchActivity : AppCompatActivity() {
         val galleryButton = findViewById<ImageButton>(R.id.galleryButton)
         val searchView = findViewById<SearchView>(R.id.searchView)
 
-        cameraButton.isEnabled = true
-        galleryButton.isEnabled = true
+        cameraButton.isClickable = true
+        galleryButton.isClickable = true
 
         searchView.findViewById<View>(androidx.appcompat.R.id.search_src_text)?.isEnabled = true
     }
