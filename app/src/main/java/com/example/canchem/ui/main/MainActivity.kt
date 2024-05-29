@@ -69,29 +69,15 @@ class MainActivity : AppCompatActivity() {
         // 다른 액티비티에서 intent로 회원탈퇴 하는 경우 판단.
         val extras = intent.extras
         if (extras?.getString("function") == "signout") {
-//            finish()
-//            SearchActivity.searchActivity?.let{
-//                SearchActivity.searchActivity!!.finish()
-//            }
-//            MyFavoriteActivity.myFavoriteActivity?.let{
-//                MyFavoriteActivity.myFavoriteActivity!!.finish()
-//            }
             naverDeleteToken()
         }
         if (extras?.getString("function") == "logout") {
             Log.d("로그아웃", "으로 메인 넘어가긴했어")
-//            finish()
-//            SearchActivity.searchActivity?.let{
-//                SearchActivity.searchActivity!!.finish()
-//            }
-//            MyFavoriteActivity.myFavoriteActivity?.let{
-//                MyFavoriteActivity.myFavoriteActivity!!.finish()
-//            }
             naverLogout()
         }
         if (savedState == "OK") {
             // 로그인 상태가 ok인 경우 처리
-            val intent = Intent(this@MainActivity, MyFavoriteActivity::class.java)
+            val intent = Intent(this@MainActivity, SearchActivity::class.java)
             startActivity(intent)
             finish()
         }
@@ -121,7 +107,7 @@ class MainActivity : AppCompatActivity() {
                     NidOAuthLogin().callProfileApi(nidProfileCallback)
 
                     Log.i("intent", intent.toString())
-                    val intent = Intent(this@MainActivity, MyFavoriteActivity::class.java)
+                    val intent = Intent(this@MainActivity, SearchActivity::class.java)
                     Log.d("버튼클릭", "1")
                     startActivity(intent)
                     finish()

@@ -56,9 +56,9 @@ class FavoriteRecyclerViewAdapter: RecyclerView.Adapter<FavoriteRecyclerViewAdap
             }
             // 텍스트 클릭시
             binding.favoriteText.setOnClickListener{
-                val intent = Intent(itemView.context, MolecularInfoActivity::class.java)
-                intent.putExtra("chemId", mData?.chem_id)
-                itemView.context.startActivity(intent)
+//                val intent = Intent(itemView.context, MolecularInfoActivity::class.java)
+//                intent.putExtra("chemId", mData?.chem_id)
+//                itemView.context.startActivity(intent)
             }
         }
 
@@ -67,48 +67,6 @@ class FavoriteRecyclerViewAdapter: RecyclerView.Adapter<FavoriteRecyclerViewAdap
 //            if(isBtnStarTrue){ // 즐겨찾기 on인 경우
                 mData = favoriteData
                 binding.favoriteText.text = favoriteData.molecular_formula
-//            }else{ //즐겨찾기 off인 경우
-//                val retrofit = Retrofit.Builder()
-//                    .baseUrl("http://$ip:8080/")
-//                    .addConverterFactory(ScalarsConverterFactory.create()) //kotlin to json(역 일수도)
-//                    .build()
-//
-//                val deleteService = retrofit.create(DeleteOneStarInterface::class.java)
-//
-//                tokenInFirebase.addValueEventListener(object: ValueEventListener {
-//                    override fun onDataChange(snapshot: DataSnapshot) {
-//                        // This method is called once with the initial value and again
-//                        // whenever data at this location is updated.
-//                        val value = snapshot.getValue().toString()
-//                        val id = favoriteData.id
-//                        Log.d("value : ", id)
-//                        Log.d(ContentValues.TAG, "Value is: " + value)
-//                        val call = deleteService.deleteStar(value, id)
-//                        Log.i("call", call.toString())
-////                        Log.d("ondatachange성공", "ㅇㅇ")
-//                        call.enqueue(object : Callback<String> {
-//                            override fun onResponse(call: Call<String>, response: Response<String>) { // spring boot에 데이터 전송 성공시
-//                                if (response.isSuccessful) {
-//                                    Log.d("onresponse성공", "ㅇㅇ")
-//                                    datalist.favoriteList.remove(mData)
-//                                    notifyDataSetChanged()
-//                                } else {
-//                                    Log.d("onresponse실패", "ㅇㅇ")
-//                                    Log.e(ContentValues.TAG, "Response unsuccessful: ${response.code()}")
-//                                }
-//                            }
-//                            override fun onFailure(call: Call<String>, t: Throwable) { //spring boot에 데이터 전송 실패시
-//                                Log.e("call error", t.toString())
-//                                Log.d("onfailure", "ㅇㅇ")
-//                            }
-//                        })
-//                    }
-//
-//                    override fun onCancelled(error: DatabaseError) {
-//                        Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
-//                    }
-//                })
-//            }
         }
     }
 }

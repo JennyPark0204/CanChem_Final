@@ -1,13 +1,21 @@
 package com.example.canchem.ui.searchHistory
 
+import android.annotation.SuppressLint
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.canchem.R
 import com.example.canchem.data.source.adapter.SearchRecyclerViewAdapter
 import com.example.canchem.data.source.dataclass.SearchData
 import com.example.canchem.data.source.dataclass.SearchDataList
@@ -15,7 +23,10 @@ import com.example.canchem.data.source.service.GetSearchHistoryService
 import com.example.canchem.data.source.service.delete.DeleteAll
 import com.example.canchem.data.source.service.delete.DeleteSelect
 import com.example.canchem.databinding.ActivitySearchHistoryBinding
+import com.example.canchem.ui.home.SearchActivity
 import com.example.canchem.ui.home.getToken
+import com.example.canchem.ui.main.MainActivity
+import com.example.canchem.ui.myFavorite.MyFavoriteActivity
 import kotlinx.coroutines.launch
 
 class SearchHistoryActivity : AppCompatActivity() {
@@ -25,6 +36,8 @@ class SearchHistoryActivity : AppCompatActivity() {
     private var token: String = ""
     private var toggleDeleteSome: Boolean = false
     private var searchDataList: List<SearchData> = emptyList()
+    private lateinit var drawer : DrawerLayout
+    private var backpressedTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +47,140 @@ class SearchHistoryActivity : AppCompatActivity() {
         setupRecyclerView()
         fetchSearchHistory()
         setupDeleteButtons()
+
+        drawer = binding.searchHistory
+        drawer.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                // 드로어가 슬라이드될 때 호출됨
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+                binding.btnDeleteAll.isEnabled = false
+                binding.btnDeleteSomeCancle.isEnabled = false
+                binding.btnDeleteSome.isEnabled = false
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                binding.btnDeleteAll.isEnabled = true
+                binding.btnDeleteSomeCancle.isEnabled = true
+                binding.btnDeleteSome.isEnabled = true
+            }
+
+            override fun onDrawerStateChanged(newState: Int) {
+                // 드로어 상태가 변경될 때 호출됨
+            }
+        })
+        // side menu. 여기부터 아래 코드는 모든 액티비티에 포함됨.
+        // 메뉴 클릭시
+        binding.btnMenu.setOnClickListener {
+            drawer.openDrawer(Gravity.RIGHT)
+        }
+        // x버튼 클릭시
+        findViewById<ImageView>(R.id.btnX).setOnClickListener{
+            drawer.closeDrawer(Gravity.RIGHT)
+        }
+        // My Page 열기 버튼 클릭시
+        findViewById<ImageView>(R.id.btnOpenDown).setOnClickListener{
+            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
+            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
+        }
+        // My Page 닫기 버튼 클릭시
+        findViewById<ImageView>(R.id.btnCloseUp).setOnClickListener{
+            findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
+            findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
+            findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
+            findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
+        }
+        // My Page 글씨로 열고 닫기
+        findViewById<TextView>(R.id.btnMyPage).setOnClickListener{
+            if(findViewById<ImageView>(R.id.btnOpenDown).visibility == View.VISIBLE){
+                findViewById<ImageView>(R.id.btnOpenDown).visibility = View.GONE
+                findViewById<ImageView>(R.id.btnCloseUp).visibility = View.VISIBLE
+                findViewById<TextView>(R.id.btnMyFavorite).visibility = View.VISIBLE
+                findViewById<TextView>(R.id.btnSearchHistory).visibility = View.VISIBLE
+            }else{
+                findViewById<ImageView>(R.id.btnOpenDown).visibility = View.VISIBLE
+                findViewById<ImageView>(R.id.btnCloseUp).visibility = View.GONE
+                findViewById<TextView>(R.id.btnMyFavorite).visibility = View.GONE
+                findViewById<TextView>(R.id.btnSearchHistory).visibility = View.GONE
+            }
+        }
+        // 회원탈퇴 클릭시
+        findViewById<TextView>(R.id.btnSignout).setOnClickListener{
+            AlertDialog.Builder(this)
+                .setTitle("정말 탈퇴하시겠습니까?")
+                .setMessage("탈퇴하실 경우, 모든 정보가 삭제됩니다.")
+                .setPositiveButton("확인", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        val intent = Intent(this@SearchHistoryActivity, MainActivity::class.java)
+                        intent.putExtra("function", "signout")
+                        startActivity(intent)
+                        finish()
+                    }
+                })
+                .setNegativeButton("취소", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        Log.d("MyTag", "negative")
+                    }
+                })
+                .create()
+                .show()
+        }
+        // 로그아웃 클릭시
+        findViewById<TextView>(R.id.btnLogout).setOnClickListener{
+            Log.d("로그아웃", "클릭")
+            AlertDialog.Builder(this)
+                .setTitle("정말 로그아웃 하시겠습니까?")
+                .setPositiveButton("확인", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        val intent = Intent(this@SearchHistoryActivity, MainActivity::class.java)
+                        Log.d("로그아웃", "으로 메인 넘어감")
+                        intent.putExtra("function", "logout")
+                        startActivity(intent)
+                        finish()
+                    }
+                })
+                .setNegativeButton("취소", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        Log.d("MyTag", "negative")
+                    }
+                })
+                .create()
+                .show()
+
+        }
+        // 즐겨찾기 클릭시
+        findViewById<TextView>(R.id.btnMyFavorite).setOnClickListener{
+            val intent = Intent(this, MyFavoriteActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        // 검색기록 클릭시
+        findViewById<TextView>(R.id.btnSearchHistory).setOnClickListener{
+            drawer.closeDrawer(Gravity.RIGHT)
+        }
+        // 홈버튼 클릭시
+        findViewById<ImageView>(R.id.btnHome).setOnClickListener{
+            val intent = Intent(this, SearchActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
+    @SuppressLint("MissingSuperCall")
+    override fun onBackPressed() {
+        if(drawer.isDrawerOpen(Gravity.RIGHT)){
+            drawer.closeDrawer(Gravity.RIGHT)
+        }else{
+            if (System.currentTimeMillis() > backpressedTime + 2000) {
+                backpressedTime = System.currentTimeMillis();
+                Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
+            } else if (System.currentTimeMillis() <= backpressedTime + 2000) {
+                finish()
+            }
+
+        }
     }
 
     private fun setupRecyclerView() {
