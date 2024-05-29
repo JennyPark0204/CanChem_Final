@@ -1,5 +1,6 @@
 package com.example.canchem.ui.main
 
+import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
@@ -9,25 +10,16 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.canchem.R
-import com.example.canchem.data.source.dataclass.DeleteToken
+import com.example.canchem.data.source.dataclass.NaverToken
+import com.example.canchem.data.source.dataclass.Token
 import com.example.canchem.data.source.myinterface.NaverLoginInterface
 import com.example.canchem.data.source.myinterface.NaverLogoutInterface
 import com.example.canchem.data.source.myinterface.NaverSignoutInterface
-import com.example.canchem.data.source.dataclass.NaverToken
-import com.example.canchem.data.source.dataclass.Token
-import com.example.canchem.data.source.util.UserId
 import com.example.canchem.data.source.util.JobSchedulerUtil
+import com.example.canchem.data.source.util.UserId
 import com.example.canchem.databinding.ActivityMainBinding
 import com.example.canchem.ui.home.SearchActivity
 import com.example.canchem.ui.myFavorite.MyFavoriteActivity
-import com.example.canchem.ui.test.YeonjeTestActivity
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -48,6 +40,11 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 class MainActivity : AppCompatActivity() {
     private val ip : String = "13.124.223.31"
     private val RC_SIGN_IN = 9001
+    companion object{
+        var mainActivity : MainActivity ?= null
+    }
+    // 버튼 두 번 클릭해야 나가지는거 구현
+    private var backpressedTime: Long = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,22 +57,41 @@ class MainActivity : AppCompatActivity() {
         // 만약 시작부터 로그인이 안 된다면, 밑의 주석을 풀고 실행후 다시 주석처리 후에 실행.
         clearLoginState()
 
+        mainActivity = this
+
+
+
         val savedState = getSavedLoginState()
 
 
         // 다른 액티비티에서 intent로 회원탈퇴 하는 경우 판단.
         val extras = intent.extras
         if (extras?.getString("function") == "signout") {
+//            finish()
+//            SearchActivity.searchActivity?.let{
+//                SearchActivity.searchActivity!!.finish()
+//            }
+//            MyFavoriteActivity.myFavoriteActivity?.let{
+//                MyFavoriteActivity.myFavoriteActivity!!.finish()
+//            }
             naverDeleteToken()
         }
         if (extras?.getString("function") == "logout") {
             Log.d("로그아웃", "으로 메인 넘어가긴했어")
+//            finish()
+//            SearchActivity.searchActivity?.let{
+//                SearchActivity.searchActivity!!.finish()
+//            }
+//            MyFavoriteActivity.myFavoriteActivity?.let{
+//                MyFavoriteActivity.myFavoriteActivity!!.finish()
+//            }
             naverLogout()
         }
         if (savedState == "OK") {
             // 로그인 상태가 ok인 경우 처리
-            val intent = Intent(this@MainActivity, SearchActivity::class.java)
+            val intent = Intent(this@MainActivity, MyFavoriteActivity::class.java)
             startActivity(intent)
+            finish()
         }
 
 
@@ -103,9 +119,10 @@ class MainActivity : AppCompatActivity() {
                     NidOAuthLogin().callProfileApi(nidProfileCallback)
 
                     Log.i("intent", intent.toString())
-                    val intent = Intent(this@MainActivity, SearchActivity::class.java)
-                    Log.d("yeonje액티비티", "로 ㄱㄱ")
+                    val intent = Intent(this@MainActivity, MyFavoriteActivity::class.java)
+                    Log.d("버튼클릭", "1")
                     startActivity(intent)
+                    finish()
                 }
                 override fun onFailure(httpStatus: Int, message: String) {
                     val errorCode = NaverIdLoginSDK.getLastErrorCode().code
@@ -198,6 +215,7 @@ class MainActivity : AppCompatActivity() {
                             .addOnSuccessListener {
                                 // 성공적으로 데이터를 설정한 경우
                                 Log.d("Firebase", "Token successfully added.")
+                                Log.d("버튼클릭", "2")
                             }
                             .addOnFailureListener { e ->
                                 // 데이터를 설정하는 데 실패한 경우
@@ -261,8 +279,9 @@ class MainActivity : AppCompatActivity() {
                                         .addOnSuccessListener {
                                             // 성공적으로 데이터를 삭제한 경우
                                             Log.d("Firebase", "Token successfully deleted.")
-                                            val intent = Intent(this@MainActivity, MainActivity::class.java)
-                                            startActivity(intent)
+
+//                                            val intent = Intent(this@MainActivity, MyFavoriteActivity::class.java)
+//                                            startActivity(intent)
                                         }
                                         .addOnFailureListener { e ->
                                             // 데이터를 삭제하는 데 실패한 경우
@@ -329,8 +348,8 @@ class MainActivity : AppCompatActivity() {
                                 .addOnSuccessListener {
                                     // 성공적으로 데이터를 삭제한 경우
                                     Log.d("Firebase", "Token successfully deleted.")
-                                    val intent = Intent(this@MainActivity, MainActivity::class.java)
-                                    startActivity(intent)
+//                                    val intent = Intent(this@MainActivity, MainActivity::class.java)
+//                                    startActivity(intent)
                                 }
                                 .addOnFailureListener { e ->
                                     // 데이터를 삭제하는 데 실패한 경우
@@ -353,5 +372,14 @@ class MainActivity : AppCompatActivity() {
                 Log.w(TAG, "Failed to read value.", error.toException())
             }
         })
+    }
+    @SuppressLint("MissingSuperCall")
+    override fun onBackPressed() {
+        if (System.currentTimeMillis() > backpressedTime + 2000) {
+            backpressedTime = System.currentTimeMillis();
+            Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
+        } else if (System.currentTimeMillis() <= backpressedTime + 2000) {
+            finish()
+        }
     }
 }
