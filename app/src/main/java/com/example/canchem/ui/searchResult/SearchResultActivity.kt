@@ -32,6 +32,7 @@ import com.example.canchem.ui.home.SearchActivity
 import com.example.canchem.ui.main.MainActivity
 import com.example.canchem.ui.molecularInfo.MolecularInfoActivity
 import com.example.canchem.ui.myFavorite.MyFavoriteActivity
+import com.example.canchem.ui.searchHistory.SearchHistoryActivity
 
 class SearchResultActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchResultBinding
@@ -290,8 +291,8 @@ class SearchResultActivity : AppCompatActivity() {
         }
         // 검색기록 클릭시
         findViewById<TextView>(R.id.btnSearchHistory).setOnClickListener{
-//            val intent = Intent(this, SearchHistoryActivity::class.java)
-//            startActivity(intent)
+            val intent = Intent(this, SearchHistoryActivity::class.java)
+            startActivity(intent)
         }
         // 홈버튼 클릭시
         findViewById<ImageView>(R.id.btnHome).setOnClickListener{

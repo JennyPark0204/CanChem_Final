@@ -569,8 +569,8 @@ class SearchActivity : AppCompatActivity() {
         val galleryButton = findViewById<ImageButton>(R.id.galleryButton)
         val searchView = findViewById<SearchView>(R.id.searchView)
 
-        cameraButton.isEnabled = false
-        galleryButton.isEnabled = false
+        cameraButton.isClickable = false
+        galleryButton.isClickable = false
 
         searchView.findViewById<View>(androidx.appcompat.R.id.search_src_text)?.isEnabled = false // 검색창 텍스트 입력을 비활성화
     }
