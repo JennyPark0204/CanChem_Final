@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -36,10 +35,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.canchem.R
-import com.example.canchem.data.source.dataclass.Search.PredictionResult
 import com.example.canchem.data.source.dataclass.Search.ChemicalCompound
 import com.example.canchem.data.source.myinterface.Search.ImageUploadService
-import com.example.canchem.data.source.myinterface.Search.MoleculeApiService
 import com.example.canchem.ui.main.MainActivity
 import com.example.canchem.ui.myFavorite.MyFavoriteActivity
 import com.google.gson.Gson

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/searchHistory"
@@ -8,12 +9,22 @@
     tools:context=".ui.searchHistory.SearchHistoryActivity"
     android:orientation="vertical">
 
+    <!-- Background ImageView -->
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:src="@drawable/ic_canchem_small"
+        android:scaleType="centerCrop"
+        android:alpha="0.5" /> <!-- You can adjust the alpha to make it more or less transparent -->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingHorizontal="20dp">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,8 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_menu"
-                android:paddingTop="15dp"
-                />
+                android:paddingTop="15dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -42,37 +52,22 @@
                 android:layout_height="wrap_content"
                 android:text="검색기록"
                 android:textSize="50dp"
-                android:layout_marginBottom="20dp"
-                />
+                android:layout_marginBottom="20dp" />
         </LinearLayout>
 
-
-
+        <!-- Increased RecyclerView height -->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.7"
-            />
+            android:layout_weight="0.8" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.1">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_canchem"
-                android:textSize="15dp"
-                android:layout_marginRight="30dp"
-                />
             <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -87,24 +82,45 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="0.8" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:id="@+id/btnDeleteSome">
+                android:visibility="invisible"
+                android:id="@+id/btnDeleteSomeCancle">
+
                 <ImageView
                     android:layout_marginLeft="13dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_deletesome"
                     android:textSize="15dp"
-                    android:layout_marginRight="33dp"
-                    />
+                    android:layout_marginRight="33dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="선택 삭제"/>
+                    android:text="선택 취소" />
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/btnDeleteSome">
+
+                <ImageView
+                    android:layout_marginLeft="13dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_deletesome"
+                    android:textSize="15dp"
+                    android:layout_marginRight="33dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="선택 삭제" />
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -116,13 +132,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="15dp"
-                    android:layout_marginRight="33dp"
-                    />
+                    android:layout_marginRight="33dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="삭제"/>
+                    android:text="삭제" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -134,40 +150,41 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="15dp"
-                    android:layout_marginRight="33dp"
-                    />
+                    android:layout_marginRight="33dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="취소"/>
+                    android:text="취소" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/btnDeleteAll">
                 <ImageView
-                android:layout_marginLeft="13dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_deleteall"
-                android:textSize="15dp"
-                android:layout_marginRight="33dp"
-                />
+                    android:layout_marginLeft="13dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_deleteall"
+                    android:textSize="15dp"
+                    android:layout_marginRight="33dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="전체 삭제"/>
+                    android:text="전체 삭제" />
+
+
             </LinearLayout>
-
-
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.1"/>
+            android:layout_weight="0.1" />
+
+
     </LinearLayout>
 
     <include layout="@layout/activity_menu" />
-
 </androidx.drawerlayout.widget.DrawerLayout>

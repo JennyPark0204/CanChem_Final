@@ -56,10 +56,13 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()  // 상태표시줄 투명하게 만듦
         // 만약 시작부터 로그인이 안 된다면, 밑의 주석을 풀고 실행후 다시 주석처리 후에 실행.
         clearLoginState()
+<<<<<<< HEAD
+=======
 
         mainActivity = this
 
 
+>>>>>>> d22a002c5d6942aee5eb83a4cf6f9ef9846df355
 
         val savedState = getSavedLoginState()
 
