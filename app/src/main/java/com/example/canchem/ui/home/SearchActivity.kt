@@ -42,6 +42,7 @@ import com.example.canchem.data.source.dataclass.Search.ChemicalCompound
 import com.example.canchem.data.source.myinterface.Search.ImageUploadService
 import com.example.canchem.ui.main.MainActivity
 import com.example.canchem.ui.myFavorite.MyFavoriteActivity
+import com.example.canchem.ui.searchHistory.SearchHistoryActivity
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -291,8 +292,8 @@ class SearchActivity : AppCompatActivity() {
         }
         // 검색기록 클릭시
         findViewById<TextView>(R.id.btnSearchHistory).setOnClickListener{
-//            val intent = Intent(this, SearchHistoryActivity::class.java)
-//            startActivity(intent)
+            val intent = Intent(this, SearchHistoryActivity::class.java)
+            startActivity(intent)
         }
         // 홈버튼 클릭시
         findViewById<ImageView>(R.id.btnHome).setOnClickListener{

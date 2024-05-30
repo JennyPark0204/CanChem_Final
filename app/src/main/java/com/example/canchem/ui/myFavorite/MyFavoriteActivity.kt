@@ -46,7 +46,6 @@ class MyFavoriteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMyFavoriteBinding
     lateinit var mDatas : FavoriteDataList // 즐겨찾기 데이터 리스트 변수
     private var backpressedTime: Long = 0
-    private var toastClickTime : Long = 0
 
     private lateinit var drawer : DrawerLayout
     companion object{
@@ -110,6 +109,7 @@ class MyFavoriteActivity : AppCompatActivity() {
 //                            Toast.makeText(this@MyFavoriteActivity,response.toString(), Toast.LENGTH_SHORT).show()
                             mDatas = response.body()!! //여기에 retrofit으로 springboot에서 받은 검색기록 추가.
                             Log.d("mDatas는 " , mDatas.toString())
+                            Log.d("mDatas는 " , mDatas.favoriteList.isEmpty().toString())
                             for(i in idList){
 //                                Toast.makeText(this@MyFavoriteActivity,mDatas.favoriteList.get(i.toInt()).toString(),Toast.LENGTH_SHORT).show()
 //                                mDatas.favoriteList.remove(mDatas.favoriteList.get(i.toInt()))
@@ -156,7 +156,7 @@ class MyFavoriteActivity : AppCompatActivity() {
 
         // 즐겨찾기 전체 삭제. 서버에 전송하는 코드 작성해야 함
         binding.btnDeleteAll.setOnClickListener {
-            if(::mDatas.isInitialized){
+            if(::mDatas.isInitialized && !mDatas.favoriteList.isEmpty()){
                 AlertDialog.Builder(this)
                     .setTitle("전체 삭제하시겠습니까?")
                     .setPositiveButton("확인", object : DialogInterface.OnClickListener {
