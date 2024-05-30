@@ -39,6 +39,7 @@ class SearchHistoryActivity : AppCompatActivity() {
     private lateinit var drawer : DrawerLayout
     private var backpressedTime: Long = 0
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchHistoryBinding.inflate(layoutInflater)
@@ -70,6 +71,8 @@ class SearchHistoryActivity : AppCompatActivity() {
                 // 드로어 상태가 변경될 때 호출됨
             }
         })
+
+
 
         binding.backBt.setOnClickListener{
             onBackPressed()
