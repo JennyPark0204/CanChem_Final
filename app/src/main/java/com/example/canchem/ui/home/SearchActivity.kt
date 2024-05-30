@@ -101,6 +101,13 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        if(drawer.isDrawerOpen(Gravity.RIGHT)){
+            drawer.closeDrawer(Gravity.RIGHT)
+        }
+        super.onResume()
+    }
+
     // 카메라, 갤러리, 크롭 등의 기능을 수행 했을 때
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
