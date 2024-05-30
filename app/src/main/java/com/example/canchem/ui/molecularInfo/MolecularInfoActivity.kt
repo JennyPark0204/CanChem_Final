@@ -37,11 +37,11 @@ class MolecularInfoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMolecularInfoBinding
     private lateinit var compoundImage: ImageView
     private var compound: ChemicalCompound? = null
-    private var currentStar = false
-    private var moleculeId : String? = null
+    private var currentStar: Boolean? = null
     private var isStarFilled = false
     private var urlCid : String? = null
     private lateinit var drawer: DrawerLayout
+    private var moleculeId : String? = null
     private  var chemId : String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -201,10 +201,12 @@ class MolecularInfoActivity : AppCompatActivity() {
             if(isStarFilled){
                 //북마크 추가
                 moleculeId?.let { fetchBookmark(this@MolecularInfoActivity, it) }
+                currentStar = isStarFilled
             }
             else{
                 //북마크 해제
                 moleculeId?.let { fetchBookmarkOff(this@MolecularInfoActivity, it) }
+                currentStar = isStarFilled
             }
         }
     }
