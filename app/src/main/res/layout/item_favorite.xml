@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingVertical="16dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
 
         <CheckBox
             android:id="@+id/btnStar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="2dp"
             android:button="@drawable/selector_star"
             android:backgroundTint="@color/white"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:checked="true"/>
 
         <TextView
             android:id="@+id/favoriteText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginLeft="5dp"
             android:textSize="20dp"
-            android:text="A" />
+            android:text="A"
+            android:paddingBottom="5dp"/>
 
 
 

@@ -12,35 +12,48 @@
     <!-- Background ImageView -->
     <ImageView
         android:id="@+id/backgroundImage"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="0.1"
-        android:src="@drawable/ic_canchem_small"
-        android:scaleType="centerCrop"
-        android:alpha="0.5" /> <!-- You can adjust the alpha to make it more or less transparent -->
+        android:layout_weight="0.02"
+        android:src="@drawable/ic_canchem"
+        android:alpha="0.4" /> <!-- You can adjust the alpha to make it more or less transparent -->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingHorizontal="20dp">
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/Top"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical">
+            <ImageView
+                android:id="@+id/backBt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:src="@drawable/ic_back"
+                />
 
-            <View
+            <ImageView
+                android:id="@+id/chemName"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:src="@drawable/ic_canchem_text"
+                android:padding="5dp"
+                />
 
             <ImageView
                 android:id="@+id/btnMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_menu"
-                android:paddingTop="15dp" />
+                android:padding="10dp"
+                />
         </LinearLayout>
 
         <LinearLayout
@@ -51,8 +64,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="검색기록"
-                android:textSize="50dp"
-                android:layout_marginBottom="20dp" />
+                android:textSize="35dp"
+                android:layout_marginBottom="20dp"
+                android:paddingHorizontal="10dp"/>
         </LinearLayout>
 
         <!-- Increased RecyclerView height -->
@@ -61,7 +75,8 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.8" />
+            android:layout_weight="0.8"
+            android:paddingHorizontal="10dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -185,6 +200,5 @@
 
 
     </LinearLayout>
-
     <include layout="@layout/activity_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>
