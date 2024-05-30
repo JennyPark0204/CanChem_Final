@@ -485,6 +485,8 @@ class SearchActivity : AppCompatActivity() {
 
     //설정 -> 권한으로 이동하는 다이얼로그
     private fun goSettingActivityAlertDialog() {
+
+
         AlertDialog.Builder(this)
             .setTitle("허용 되지 않은 권한이 있습니다.")
             .setMessage("일부 기능이 제한 될 수 있습니다.\n설정에서 권한을 허용해주세요.\n권한 -> 저장공간 -> 허용")
@@ -499,6 +501,8 @@ class SearchActivity : AppCompatActivity() {
     }
     //이미지 서버 처리 함수
     private fun uploadImageToServer(imageBase64: String) {
+
+        showToast("사진이 전송 중 입니다. 잠시만 기다려 주십시오.")
         getToken(this@SearchActivity) { token ->
             if (token != null) {
                 val ourToken = "$token".replace("Bearer ","")
@@ -525,11 +529,6 @@ class SearchActivity : AppCompatActivity() {
                                     val intent = Intent(this@SearchActivity, MolecularInfoActivity::class.java)
                                     intent.putExtra("compound", compound)
                                     startActivity(intent)
-//                                    val ChemicalCompoundResult = Gson().fromJson(it, ChemicalCompound::class.java)
-//                                    // 서버로부터 받은 값을 토스트 메시지로 표시
-//                                    ChemicalCompoundResult?.let { result ->
-//                                        Toast.makeText(this@SearchActivity, result.toString(), Toast.LENGTH_LONG).show()
-//                                    }
                                 } catch (e: Exception) {
                                     Log.e("UploadImage", "JSON Parsing Error", e)
                                     Toast.makeText(
@@ -542,11 +541,7 @@ class SearchActivity : AppCompatActivity() {
                         } else {
                             val errorBody = response.errorBody()?.string()
                             Log.e("UploadImage", "Error Response: $errorBody")
-                            Toast.makeText(
-                                this@SearchActivity,
-                                "이미지 업로드 실패: $errorBody",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            showToast("사진과 매칭된 일치한 없습니다.")
                         }
                     }
 
@@ -619,5 +614,9 @@ class SearchActivity : AppCompatActivity() {
                 finishAffinity()
             }
         }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

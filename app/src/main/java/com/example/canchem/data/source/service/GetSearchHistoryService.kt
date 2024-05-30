@@ -51,5 +51,4 @@ class GetSearchHistoryService(private val context: Context) {
             }
         })
     }
-
 }

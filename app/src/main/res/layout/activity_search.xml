@@ -18,8 +18,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_menu"
             android:padding="10dp"
-            android:layout_gravity="right"
-            />
+            android:layout_gravity="right" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,8 +30,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_canchem"
-                android:padding="10dp"
-                />
+                android:padding="10dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -63,8 +61,7 @@
                         app:layout_constraintEnd_toEndOf="@id/galleryButton"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:queryHint="화학식을 입력하세요"
-                        />
+                        app:queryHint="화학식을 입력하세요" />
 
                     <ImageButton
                         android:id="@+id/cameraButton"
@@ -74,7 +71,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:src="@drawable/ic_camera"
-                        android:backgroundTint="#FFFFFF"/>
+                        android:backgroundTint="#FFFFFF" />
 
 
                     <ImageButton
@@ -86,14 +83,14 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:backgroundTint="#FFFFFF"
-                        android:layout_marginRight="25dp"
-                        />
+                        android:layout_marginRight="25dp" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.appcompat.widget.Toolbar>
 
         </LinearLayout>
+
     </LinearLayout>
     <include layout="@layout/activity_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>
