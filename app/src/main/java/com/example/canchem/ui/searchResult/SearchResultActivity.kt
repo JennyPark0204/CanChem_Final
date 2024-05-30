@@ -340,7 +340,6 @@ class SearchResultActivity : AppCompatActivity() {
             drawer.closeDrawer(Gravity.RIGHT)
         }else{
             finish()
-            System.exit(0)
         }
     }
 }

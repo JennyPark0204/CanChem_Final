@@ -56,9 +56,9 @@ class FavoriteRecyclerViewAdapter: RecyclerView.Adapter<FavoriteRecyclerViewAdap
             }
             // 텍스트 클릭시
             binding.favoriteText.setOnClickListener{
-//                val intent = Intent(itemView.context, MolecularInfoActivity::class.java)
-//                intent.putExtra("chemId", mData?.chem_id)
-//                itemView.context.startActivity(intent)
+                val intent = Intent(itemView.context, MolecularInfoActivity::class.java)
+                intent.putExtra("chemId", mData?.chem_id)
+                itemView.context.startActivity(intent)
             }
         }
 
