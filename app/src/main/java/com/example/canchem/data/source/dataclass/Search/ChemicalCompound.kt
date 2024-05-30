@@ -7,17 +7,17 @@ import com.google.gson.annotations.SerializedName
 data class ChemicalCompound(
     @SerializedName("id") val id: String,
     @SerializedName("cid") val cid: String,
-    @SerializedName("inpacName") val inpacName: String,
-    @SerializedName("molecularFormula") val molecularFormula: String,
-    @SerializedName("molecularWeight") val molecularWeight: String,
-    @SerializedName("isomericSmiles") val isomericSmiles: String,
+    @SerializedName("inpac_name") val inpacName: String,
+    @SerializedName("molecular_formula") val molecularFormula: String,
+    @SerializedName("molecular_weight") val molecularWeight: String,
+    @SerializedName("isomeric_smiles") val isomericSmiles: String,
     @SerializedName("inchi") val inchi: String,
     @SerializedName("inchiKey") val inchiKey: String,
-    @SerializedName("canonicalSmiles") val canonicalSmiles: String,
+    @SerializedName("canonical_smiles") val canonicalSmiles: String,
     @SerializedName("synonyms") val synonyms: List<String>,
     @SerializedName("description") val description: String,
-    @SerializedName("image2DUrl") val image2DUri: String?,
-    @SerializedName("image3DConformer") val image3DConformer: Image3DConformer?
+    @SerializedName("image_2D_url") val image2DUri: String?,
+    @SerializedName("image_3D_Conformer") val image3DConformer: Image3DConformer?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "N/A",

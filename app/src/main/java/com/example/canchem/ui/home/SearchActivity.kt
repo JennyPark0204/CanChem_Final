@@ -73,6 +73,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var drawer: DrawerLayout
     private lateinit var binding:ActivitySearchBinding
     private var backpressedTime: Long = 0
+    private val page: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,7 +145,6 @@ class SearchActivity : AppCompatActivity() {
         // 검색 버튼 클릭 이벤트 처리
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                val page = 0
                 getToken(this@SearchActivity){ token->
                     if(token!=null){
                         fetchChemicalCompounds(this@SearchActivity,token, "$query", page)
@@ -510,11 +510,8 @@ class SearchActivity : AppCompatActivity() {
                                     val ChemicalCompoundResult = Gson().fromJson(it, ChemicalCompound::class.java)
                                     // 서버로부터 받은 값을 토스트 메시지로 표시
                                     ChemicalCompoundResult?.let { result ->
-                                        Toast.makeText(
-                                            this@SearchActivity,
-                                            result.toString(),
-                                            Toast.LENGTH_LONG
-                                        ).show()
+                                        Toast.makeText(this@SearchActivity, result.toString(), Toast.LENGTH_LONG).show()
+                                        fetchSmilesCompound(this@SearchActivity, token, result.toString())
                                     }
                                 } catch (e: Exception) {
                                     Log.e("UploadImage", "JSON Parsing Error", e)
