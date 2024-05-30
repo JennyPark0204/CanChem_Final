@@ -88,6 +88,12 @@ class SearchResultActivity : AppCompatActivity() {
             onBackPressed()
         }
     }
+    override fun onResume() {
+        if(drawer.isDrawerOpen(Gravity.RIGHT)){
+            drawer.closeDrawer(Gravity.RIGHT)
+        }
+        super.onResume()
+    }
 
     private fun setupRecyclerView(){
         adapter = CompoundAdapter(this, compounds) { compound ->
