@@ -90,7 +90,7 @@ class MyFavoriteActivity : AppCompatActivity() {
 
         // 즐겨찾기 전체 삭제. 서버에 전송하는 코드 작성해야 함
         binding.btnDeleteAll.setOnClickListener {
-            if (::mDatas.isInitialized) {
+            if (::mDatas.isInitialized && !mDatas.favoriteList.isEmpty()) {
                 AlertDialog.Builder(this)
                     .setTitle("전체 삭제하시겠습니까?")
                     .setPositiveButton("확인", object : DialogInterface.OnClickListener {
@@ -159,8 +159,7 @@ class MyFavoriteActivity : AppCompatActivity() {
                     .create()
                     .show()
             } else {
-                Toast.makeText(this@MyFavoriteActivity, "즐겨찾기 표시된 값이 없습니다.", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this@MyFavoriteActivity, "즐겨찾기 표시된 값이 없습니다.", Toast.LENGTH_SHORT).show()
             }
         }
 
