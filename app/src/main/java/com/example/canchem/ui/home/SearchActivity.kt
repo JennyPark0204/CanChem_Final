@@ -73,12 +73,13 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var drawer: DrawerLayout
     private lateinit var binding:ActivitySearchBinding
     private var backpressedTime: Long = 0
-    private var state: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.searchView.setOnQueryTextListener(null)
 
         searchActivity = this
 
@@ -86,14 +87,9 @@ class SearchActivity : AppCompatActivity() {
 
         setOnClick()
 
-        //입력 필터링 적용
-        val editText = binding.searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
-        setInputFilter(editText)
-
-        binding.searchView.maxWidth = Int.MAX_VALUE
-        binding.searchView.isSubmitButtonEnabled = true
-
         addDrawerListener()
+
+        initializeSearchView()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.search)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -101,6 +97,7 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
     }
+
     // 카메라, 갤러리, 크롭 등의 기능을 수행 했을 때
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -136,6 +133,31 @@ class SearchActivity : AppCompatActivity() {
             }
         }
     }
+    private fun initializeSearchView(){
+        binding.searchView.maxWidth = Int.MAX_VALUE
+        binding.searchView.isSubmitButtonEnabled = true
+
+        //입력 필터링 적용
+        val editText = binding.searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
+        setInputFilter(editText)
+
+        // 검색 버튼 클릭 이벤트 처리
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                val page = 0
+                getToken(this@SearchActivity){ token->
+                    if(token!=null){
+                        fetchChemicalCompounds(this@SearchActivity,token, "$query", page)
+                    }
+                }
+                return false
+            }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // 검색어가 변경될 때 실행
+                return false
+            }
+        })
+    }
 
     // 입력 필터링 적용 함수
     fun setInputFilter(editText: EditText) {
@@ -157,23 +179,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setOnClick(){
-        // 검색 버튼 클릭 이벤트 처리
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                val page = 0
-                getToken(this@SearchActivity){ token->
-                    if(token!=null){
-                        fetchChemicalCompounds(this@SearchActivity,token, "$query", page)
-                    }
-                }
-                return false
-            }
-            override fun onQueryTextChange(newText: String?): Boolean {
-                // 검색어가 변경될 때 실행
-                return false
-            }
-        })
-
         // 카메라 버튼 클릭시
         binding.cameraButton.setOnClickListener {
             //카메라 권한이 있는지 확인
@@ -601,4 +606,5 @@ class SearchActivity : AppCompatActivity() {
 
         }
     }
+
 }
