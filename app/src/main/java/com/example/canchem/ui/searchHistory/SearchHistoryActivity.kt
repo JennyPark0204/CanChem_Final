@@ -37,8 +37,6 @@ class SearchHistoryActivity : AppCompatActivity() {
     private var toggleDeleteSome: Boolean = false
     private var searchDataList: List<SearchData> = emptyList()
     private lateinit var drawer : DrawerLayout
-    private var backpressedTime: Long = 0
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
