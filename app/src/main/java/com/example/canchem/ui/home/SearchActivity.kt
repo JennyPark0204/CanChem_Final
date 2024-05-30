@@ -76,11 +76,14 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var binding:ActivitySearchBinding
     private var backpressedTime: Long = 0
     private val page: Int = 0
+    private var searchQuery: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        searchQuery = intent.getStringExtra("")
 
         binding.searchView.setOnQueryTextListener(null)
 
