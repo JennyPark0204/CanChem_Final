@@ -13,12 +13,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.canchem.R
 import com.example.canchem.data.source.adapter.SearchRecyclerViewAdapter
 import com.example.canchem.data.source.dataclass.SearchData
-import com.example.canchem.data.source.dataclass.SearchDataList
 import com.example.canchem.data.source.service.GetSearchHistoryService
 import com.example.canchem.data.source.service.delete.DeleteAll
 import com.example.canchem.data.source.service.delete.DeleteSelect
@@ -27,7 +25,6 @@ import com.example.canchem.ui.home.SearchActivity
 import com.example.canchem.ui.home.getToken
 import com.example.canchem.ui.main.MainActivity
 import com.example.canchem.ui.myFavorite.MyFavoriteActivity
-import kotlinx.coroutines.launch
 
 class SearchHistoryActivity : AppCompatActivity() {
 
@@ -242,7 +239,6 @@ class SearchHistoryActivity : AppCompatActivity() {
                 else{
                     showToast("검색 기록이 없습니다.")
                 }
-
             }
         }
     }
