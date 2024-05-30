@@ -90,7 +90,7 @@ class MyFavoriteActivity : AppCompatActivity() {
 
         // 즐겨찾기 전체 삭제. 서버에 전송하는 코드 작성해야 함
         binding.btnDeleteAll.setOnClickListener {
-            if(::mDatas.isInitialized){
+            if (::mDatas.isInitialized) {
                 AlertDialog.Builder(this)
                     .setTitle("전체 삭제하시겠습니까?")
                     .setPositiveButton("확인", object : DialogInterface.OnClickListener {
@@ -116,16 +116,26 @@ class MyFavoriteActivity : AppCompatActivity() {
 
 
                                         call.enqueue(object : Callback<String> {
-                                            override fun onResponse(call: Call<String>, response: Response<String>) { //요청성공시
+                                            override fun onResponse(
+                                                call: Call<String>,
+                                                response: Response<String>
+                                            ) { //요청성공시
                                                 if (response.isSuccessful) {
                                                     mDatas.favoriteList.clear()
                                                     recyclerView(mDatas)
-                                                    Toast.makeText(this@MyFavoriteActivity, "전체 삭제 완료.", Toast.LENGTH_SHORT).show()
+                                                    Toast.makeText(
+                                                        this@MyFavoriteActivity,
+                                                        "전체 삭제 완료.",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
                                                 } else {
                                                 }
                                             }
 
-                                            override fun onFailure(call: Call<String>, t: Throwable) { //요청실패시
+                                            override fun onFailure(
+                                                call: Call<String>,
+                                                t: Throwable
+                                            ) { //요청실패시
                                                 Log.e("call error", t.toString())
                                             }
                                         })
@@ -148,8 +158,9 @@ class MyFavoriteActivity : AppCompatActivity() {
                     })
                     .create()
                     .show()
-            }else{
-                Toast.makeText(this@MyFavoriteActivity,"즐겨찾기 표시된 값이 없습니다.", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this@MyFavoriteActivity, "즐겨찾기 표시된 값이 없습니다.", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -267,6 +278,11 @@ class MyFavoriteActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+    }
+
+    override fun onResume() {
+        reloadBookMark()
+        super.onResume()
     }
 
     private fun reloadBookMark()

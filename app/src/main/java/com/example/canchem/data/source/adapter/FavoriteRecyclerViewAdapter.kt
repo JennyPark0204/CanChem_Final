@@ -65,6 +65,7 @@ class FavoriteRecyclerViewAdapter: RecyclerView.Adapter<FavoriteRecyclerViewAdap
 
         fun bind(favoriteData: FavoriteData){
 //            if(isBtnStarTrue){ // 즐겨찾기 on인 경우
+
                 mData = favoriteData
                 binding.favoriteText.text = favoriteData.molecular_formula
         }
