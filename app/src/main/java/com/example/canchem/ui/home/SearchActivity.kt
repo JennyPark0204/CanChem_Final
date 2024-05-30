@@ -447,7 +447,7 @@ class SearchActivity : AppCompatActivity() {
     private fun cropImage(photoUri: Uri) {
         // 임시 파일로 저장할 파일 객체 생성
         val savingUri = Uri.fromFile(createTempFile("cropImage", ".jpg"))
-        Crop.of(photoUri, savingUri).withAspect(1, 1).start(this)
+        Crop.of(photoUri, savingUri).start(this)
     }
 
     // Bitmap을 Base64로 변환하는 함수
