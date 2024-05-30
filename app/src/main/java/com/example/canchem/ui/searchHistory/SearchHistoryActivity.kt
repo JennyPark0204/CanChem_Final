@@ -39,6 +39,7 @@ class SearchHistoryActivity : AppCompatActivity() {
     private lateinit var drawer : DrawerLayout
     private var backpressedTime: Long = 0
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchHistoryBinding.inflate(layoutInflater)
@@ -71,10 +72,12 @@ class SearchHistoryActivity : AppCompatActivity() {
             }
         })
 
+
+
         binding.backBt.setOnClickListener{
             onBackPressed()
         }
-        
+
         // side menu. 여기부터 아래 코드는 모든 액티비티에 포함됨.
         // 메뉴 클릭시
         binding.btnMenu.setOnClickListener {

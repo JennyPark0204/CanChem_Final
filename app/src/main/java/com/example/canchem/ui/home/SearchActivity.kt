@@ -76,13 +76,18 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var binding:ActivitySearchBinding
     private var backpressedTime: Long = 0
     private val page: Int = 0
+    private var searchQuery: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.searchView.setOnQueryTextListener(null)
+        searchQuery = intent.getStringExtra("chemId")
+        searchQuery?.let { query ->
+            binding.searchView.setQuery(query, true)
+            setSearchQuery(query)
+        }
 
         searchActivity = this
 
@@ -170,6 +175,15 @@ class SearchActivity : AppCompatActivity() {
                 return false
             }
         })
+    }
+
+    private fun setSearchQuery(qurey: String){
+        searchQuery = null
+        getToken(this){token ->
+            token?.let{
+                fetchChemicalCompounds(this@SearchActivity,token, qurey, page)
+            }
+        }
     }
 
     // 입력 필터링 적용 함수

@@ -1,17 +1,21 @@
 package com.example.canchem.data.source.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.canchem.data.source.dataclass.SearchData
 import com.example.canchem.data.source.dataclass.SearchDataList
 import com.example.canchem.databinding.ItemSearchBinding
 import com.example.canchem.data.source.service.delete.DeleteOne
+import com.example.canchem.ui.home.SearchActivity
 import com.example.canchem.ui.home.getToken
+import com.example.canchem.ui.molecularInfo.MolecularInfoActivity
 
 class SearchRecyclerViewAdapter(
     private val context: Context,
@@ -75,6 +79,13 @@ class SearchRecyclerViewAdapter(
                     selectedItems.add(searchData)
                 else
                     selectedItems.remove(searchData)
+            }
+
+            binding.searchText.setOnClickListener {
+                val chemName = binding.searchText.text.toString()
+                val intent = Intent(itemView.context, SearchActivity::class.java)
+                intent.putExtra("chemId", chemName)
+                itemView.context.startActivity(intent)
             }
         }
 
