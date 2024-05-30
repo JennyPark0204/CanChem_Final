@@ -16,7 +16,7 @@ fun fetchBookmarkOff(context: Context,moleculeId: String){
             call.enqueue(object : Callback<Unit>{
                 override fun onResponse(call: Call<Unit>, response: Response<Unit>){
                     if (response.isSuccessful) {
-                        Toast.makeText(context, "즐겨찾기가 해제 되었습니다.", Toast.LENGTH_SHORT).show()
+
                     } else {
                         Toast.makeText(context, "즐겨찾기 해제에 실패하였습니다.", Toast.LENGTH_SHORT).show()
                     }
