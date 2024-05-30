@@ -63,6 +63,12 @@ class MolecularInfoActivity : AppCompatActivity() {
         setOnClick()
 
     }
+    override fun onResume() {
+        if(drawer.isDrawerOpen(Gravity.RIGHT)){
+            drawer.closeDrawer(Gravity.RIGHT)
+        }
+        super.onResume()
+    }
 
     private fun setText(compound : ChemicalCompound)
     {
