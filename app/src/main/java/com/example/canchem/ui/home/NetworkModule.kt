@@ -8,8 +8,6 @@ import com.example.canchem.data.source.myinterface.Search.MoleculeApiService
 import com.example.canchem.data.source.myinterface.BookMark.BookmarkStateService
 import com.example.canchem.data.source.myinterface.BookMark.BookmarkService
 import com.example.canchem.data.source.myinterface.ChemIdSearch.ChemIdSearchService
-import com.example.canchem.data.source.myinterface.SmilesSearch.SmilesSearchService
-import retrofit2.create
 
 object NetworkModule {
     private const val BASE_URL = "http://13.124.223.31:8080"
