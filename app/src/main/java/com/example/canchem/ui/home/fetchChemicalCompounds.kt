@@ -23,10 +23,7 @@ fun fetchChemicalCompounds(context: Context, token: String, searchQuery: String,
                     val totalPages = it.totalPages
                     val compounds = it. searchResults
 
-                    if(totalElements == 0){
-                        Toast.makeText(context, "검색 결과가 존재하지 않습니다.", Toast.LENGTH_SHORT).show()
-                    }
-                    else if(totalElements == 1){
+                    if(totalElements == 1){
                         Toast.makeText(context, "검색 결과 하나 인텐트.", Toast.LENGTH_SHORT).show()
                         val intent = Intent(context, MolecularInfoActivity::class.java)
 
