@@ -45,7 +45,6 @@ class MolecularInfoActivity : AppCompatActivity() {
     private  var chemId : String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
         binding = ActivityMolecularInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

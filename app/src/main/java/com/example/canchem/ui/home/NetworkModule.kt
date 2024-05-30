@@ -24,5 +24,4 @@ object NetworkModule {
     val bookmarkService: BookmarkService = retrofit.create(BookmarkService::class.java)
     val bookmarkOffService: BookmarkOffService = retrofit.create(BookmarkOffService::class.java)
     var chemIdSearchService : ChemIdSearchService = retrofit.create(ChemIdSearchService::class.java)
-    val smilesSearchService : SmilesSearchService = retrofit.create(SmilesSearchService::class.java)
 }

@@ -41,6 +41,7 @@ import com.example.canchem.R
 import com.example.canchem.data.source.dataclass.Search.ChemicalCompound
 import com.example.canchem.data.source.myinterface.Search.ImageUploadService
 import com.example.canchem.ui.main.MainActivity
+import com.example.canchem.ui.molecularInfo.MolecularInfoActivity
 import com.example.canchem.ui.myFavorite.MyFavoriteActivity
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaType
@@ -497,22 +498,24 @@ class SearchActivity : AppCompatActivity() {
                 val requestBody = RequestBody.create("image/*".toMediaType(), decodedImage)
                 val imagePart = MultipartBody.Part.createFormData("image", "image.jpg", requestBody)
                 val call = service.uploadImage(ourToken, imagePart)
-                call.enqueue(object : Callback<ResponseBody> {
+                call.enqueue(object : Callback<ChemicalCompound> {
                     override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
+                        call: Call<ChemicalCompound>,
+                        response: Response<ChemicalCompound>
                     ) {
                         if (response.isSuccessful) {
-                            val ChemicalCompoundResultJson = response.body()?.string()
-                            Log.d("UploadImage", "Response JSON: $ChemicalCompoundResultJson")
-                            ChemicalCompoundResultJson?.let {
+                            val compound = response.body()
+                            Log.d("UploadImage", "Response JSON: $compound")
+                            compound?.let {
                                 try {
-                                    val ChemicalCompoundResult = Gson().fromJson(it, ChemicalCompound::class.java)
-                                    // 서버로부터 받은 값을 토스트 메시지로 표시
-                                    ChemicalCompoundResult?.let { result ->
-                                        Toast.makeText(this@SearchActivity, result.toString(), Toast.LENGTH_LONG).show()
-                                        fetchSmilesCompound(this@SearchActivity, token, result.toString())
-                                    }
+                                    val intent = Intent(this@SearchActivity, MolecularInfoActivity::class.java)
+                                    intent.putExtra("compound", compound)
+                                    startActivity(intent)
+//                                    val ChemicalCompoundResult = Gson().fromJson(it, ChemicalCompound::class.java)
+//                                    // 서버로부터 받은 값을 토스트 메시지로 표시
+//                                    ChemicalCompoundResult?.let { result ->
+//                                        Toast.makeText(this@SearchActivity, result.toString(), Toast.LENGTH_LONG).show()
+//                                    }
                                 } catch (e: Exception) {
                                     Log.e("UploadImage", "JSON Parsing Error", e)
                                     Toast.makeText(
@@ -533,7 +536,7 @@ class SearchActivity : AppCompatActivity() {
                         }
                     }
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    override fun onFailure(call: Call<ChemicalCompound>, t: Throwable) {
                         Log.e("UploadImage", "Network Error", t)
                         Toast.makeText(
                             this@SearchActivity,
