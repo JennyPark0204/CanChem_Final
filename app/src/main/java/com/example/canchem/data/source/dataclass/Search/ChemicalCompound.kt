@@ -17,7 +17,7 @@ data class ChemicalCompound(
     @SerializedName("synonyms") val synonyms: List<String>,
     @SerializedName("description") val description: String,
     @SerializedName("image_2D_url") val image2DUri: String?,
-    @SerializedName("image_3D_conformer") val image3DConformer: Image3DConformer?
+    @SerializedName("image_3D_Conformer") val image3DConformer: Image3DConformer?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "N/A",

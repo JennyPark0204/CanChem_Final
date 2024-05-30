@@ -41,6 +41,7 @@ import com.example.canchem.R
 import com.example.canchem.data.source.dataclass.Search.ChemicalCompound
 import com.example.canchem.data.source.myinterface.Search.ImageUploadService
 import com.example.canchem.ui.main.MainActivity
+import com.example.canchem.ui.molecularInfo.MolecularInfoActivity
 import com.example.canchem.ui.myFavorite.MyFavoriteActivity
 import com.example.canchem.ui.searchHistory.SearchHistoryActivity
 import com.google.gson.Gson
@@ -74,12 +75,14 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var drawer: DrawerLayout
     private lateinit var binding:ActivitySearchBinding
     private var backpressedTime: Long = 0
-    private var state: Boolean = true
+    private val page: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.searchView.setOnQueryTextListener(null)
 
         searchActivity = this
 
@@ -87,14 +90,9 @@ class SearchActivity : AppCompatActivity() {
 
         setOnClick()
 
-        //입력 필터링 적용
-        val editText = binding.searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
-        setInputFilter(editText)
-
-        binding.searchView.maxWidth = Int.MAX_VALUE
-        binding.searchView.isSubmitButtonEnabled = true
-
         addDrawerListener()
+
+        initializeSearchView()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.search)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -102,6 +100,7 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
     }
+
     // 카메라, 갤러리, 크롭 등의 기능을 수행 했을 때
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -137,6 +136,30 @@ class SearchActivity : AppCompatActivity() {
             }
         }
     }
+    private fun initializeSearchView(){
+        binding.searchView.maxWidth = Int.MAX_VALUE
+        binding.searchView.isSubmitButtonEnabled = true
+
+        //입력 필터링 적용
+        val editText = binding.searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
+        setInputFilter(editText)
+
+        // 검색 버튼 클릭 이벤트 처리
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                getToken(this@SearchActivity){ token->
+                    if(token!=null){
+                        fetchChemicalCompounds(this@SearchActivity,token, "$query", page)
+                    }
+                }
+                return false
+            }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // 검색어가 변경될 때 실행
+                return false
+            }
+        })
+    }
 
     // 입력 필터링 적용 함수
     fun setInputFilter(editText: EditText) {
@@ -158,23 +181,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setOnClick(){
-        // 검색 버튼 클릭 이벤트 처리
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                val page = 0
-                getToken(this@SearchActivity){ token->
-                    if(token!=null){
-                        fetchChemicalCompounds(this@SearchActivity,token, "$query", page)
-                    }
-                }
-                return false
-            }
-            override fun onQueryTextChange(newText: String?): Boolean {
-                // 검색어가 변경될 때 실행
-                return false
-            }
-        })
-
         // 카메라 버튼 클릭시
         binding.cameraButton.setOnClickListener {
             //카메라 권한이 있는지 확인
@@ -493,25 +499,24 @@ class SearchActivity : AppCompatActivity() {
                 val requestBody = RequestBody.create("image/*".toMediaType(), decodedImage)
                 val imagePart = MultipartBody.Part.createFormData("image", "image.jpg", requestBody)
                 val call = service.uploadImage(ourToken, imagePart)
-                call.enqueue(object : Callback<ResponseBody> {
+                call.enqueue(object : Callback<ChemicalCompound> {
                     override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
+                        call: Call<ChemicalCompound>,
+                        response: Response<ChemicalCompound>
                     ) {
                         if (response.isSuccessful) {
-                            val ChemicalCompoundResultJson = response.body()?.string()
-                            Log.d("UploadImage", "Response JSON: $ChemicalCompoundResultJson")
-                            ChemicalCompoundResultJson?.let {
+                            val compound = response.body()
+                            Log.d("UploadImage", "Response JSON: $compound")
+                            compound?.let {
                                 try {
-                                    val ChemicalCompoundResult = Gson().fromJson(it, ChemicalCompound::class.java)
-                                    // 서버로부터 받은 값을 토스트 메시지로 표시
-                                    ChemicalCompoundResult?.let { result ->
-                                        Toast.makeText(
-                                            this@SearchActivity,
-                                            result.toString(),
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                    }
+                                    val intent = Intent(this@SearchActivity, MolecularInfoActivity::class.java)
+                                    intent.putExtra("compound", compound)
+                                    startActivity(intent)
+//                                    val ChemicalCompoundResult = Gson().fromJson(it, ChemicalCompound::class.java)
+//                                    // 서버로부터 받은 값을 토스트 메시지로 표시
+//                                    ChemicalCompoundResult?.let { result ->
+//                                        Toast.makeText(this@SearchActivity, result.toString(), Toast.LENGTH_LONG).show()
+//                                    }
                                 } catch (e: Exception) {
                                     Log.e("UploadImage", "JSON Parsing Error", e)
                                     Toast.makeText(
@@ -532,7 +537,7 @@ class SearchActivity : AppCompatActivity() {
                         }
                     }
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    override fun onFailure(call: Call<ChemicalCompound>, t: Throwable) {
                         Log.e("UploadImage", "Network Error", t)
                         Toast.makeText(
                             this@SearchActivity,
@@ -602,4 +607,5 @@ class SearchActivity : AppCompatActivity() {
 
         }
     }
+
 }

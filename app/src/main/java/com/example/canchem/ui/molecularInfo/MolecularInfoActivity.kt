@@ -42,9 +42,9 @@ class MolecularInfoActivity : AppCompatActivity() {
     private var isStarFilled = false
     private var urlCid : String? = null
     private lateinit var drawer: DrawerLayout
+    private  var chemId : String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
         binding = ActivityMolecularInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -54,6 +54,10 @@ class MolecularInfoActivity : AppCompatActivity() {
         //ImageView 초기화
         compoundImage = findViewById(R.id.Image2D)
         compound = intent.getParcelableExtra("compound")
+
+        chemId = intent.getStringExtra("chemId")
+        chemId?.let { setCompound(it) }
+
         compound?.let { setText(it) }
         urlCid?.let { onWebView(it) }
         setOnClick()
@@ -106,6 +110,32 @@ class MolecularInfoActivity : AppCompatActivity() {
         }
 
         // 이미지뷰에 클릭 리스너 추가
+    }
+
+    private fun setCompound(chemId : String){
+        val chemIdSearchService = NetworkModule.chemIdSearchService
+        getToken(this@MolecularInfoActivity){ token ->
+            if(token != null){
+                val call = chemIdSearchService.ChemIdSearch(token, chemId)
+                call.enqueue(object : Callback<ChemicalCompound>{
+                    override fun onResponse(call: Call<ChemicalCompound>, response: Response<ChemicalCompound>) {
+                        if (response.isSuccessful) {
+                            compound = response.body()
+                            compound?.let {
+                                setText(it)
+                                onWebView(it.cid)
+                            }
+                        }
+                        else{
+                            Toast.makeText(this@MolecularInfoActivity, "API 호출 실패: ${response.code()}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    override fun onFailure(call:Call<ChemicalCompound>, t:Throwable) {
+                        Toast.makeText(this@MolecularInfoActivity, "Network error: ${t.message}", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
+        }
     }
 
 
