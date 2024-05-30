@@ -39,7 +39,6 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class MainActivity : AppCompatActivity() {
     private val ip : String = "13.124.223.31"
-    private val RC_SIGN_IN = 9001
     companion object{
         var mainActivity : MainActivity ?= null
     }
@@ -60,11 +59,7 @@ class MainActivity : AppCompatActivity() {
 
         mainActivity = this
 
-
-
-
         val savedState = getSavedLoginState()
-
 
         // 다른 액티비티에서 intent로 회원탈퇴 하는 경우 판단.
         val extras = intent.extras
@@ -81,11 +76,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-
-
-
-
-
 
         /* 네이버 로그인 버튼 클릭 */
         binding.btnNaverLogin.setOnClickListener {
@@ -113,9 +103,6 @@ class MainActivity : AppCompatActivity() {
                     finish()
                 }
                 override fun onFailure(httpStatus: Int, message: String) {
-                    val errorCode = NaverIdLoginSDK.getLastErrorCode().code
-                    val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
-                    Toast.makeText(this@MainActivity,"errorCode:$errorCode, errorDesc:$errorDescription",Toast.LENGTH_SHORT).show()
                 }
                 override fun onError(errorCode: Int, message: String) {
                     onFailure(errorCode, message)
@@ -147,17 +134,8 @@ class MainActivity : AppCompatActivity() {
     }
     val first : String = "Bearer"
 
-    //firebase DB
-//    val firebaseUsers = FirebaseDatabase.getInstance().getReference("Users")
-//    val firebaseUsersToken = firebaseUsers.child("Token")
     val database = Firebase.database
     val tokenInFirebase = database.getReference("Token")
-
-
-    override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-    }
 
     /* 네이버 사용자 정보 가져오기*/
     val nidProfileCallback = object : NidProfileCallback<NidProfileResponse> {
@@ -189,16 +167,6 @@ class MainActivity : AppCompatActivity() {
             call.enqueue(object : Callback<Token> {
                 override fun onResponse(call: Call<Token>, response: Response<Token>) { //요청성공시
                     if (response.isSuccessful) {
-                        Toast.makeText(this@MainActivity, "네이버 로그인 성공\n" +
-                                "user id : ${userId}\n" +
-                                "email: ${email}\n" +
-                                "mobile : ${mobile}\n" +
-                                "nickname: ${nickname}\n" +
-                                "name: ${name}\n" +
-                                "gender: ${gender}\n" +
-                                "profileImage: ${profileImage}\n"+
-                                "accessToken: ${response.body()?.accessToken}"
-                            , Toast.LENGTH_SHORT).show()
                         tokenInFirebase.child(UserId.userId!!).setValue(first + " " + response.body()?.accessToken)
                             .addOnSuccessListener {
                                 // 성공적으로 데이터를 설정한 경우
@@ -209,26 +177,17 @@ class MainActivity : AppCompatActivity() {
                                 // 데이터를 설정하는 데 실패한 경우
                                 Log.e("Firebase", "Failed to add token.", e)
                             }
-//                        tokenInFirebase.setValue(first + " " + response.body()?.accessToken) //firebase DB에 accessToken값 저장
                     } else {
-                        Toast.makeText(this@MainActivity, "네이버 사용자 정보 실패", Toast.LENGTH_SHORT).show()
                     }
 
                 }
 
                 override fun onFailure(call: Call<Token>, t: Throwable) { //요청실패시
-                    Toast.makeText(this@MainActivity, "아예 실패", Toast.LENGTH_SHORT).show()
                     Log.e("call error", t.toString())
                 }
             })
         }
         override fun onFailure(httpState : Int, message: String) {
-            val errorCode = NaverIdLoginSDK.getLastErrorCode().code
-            val errorDesc = NaverIdLoginSDK.getLastErrorDescription()
-
-            Toast.makeText(this@MainActivity, "네이버 로그인 실패\n" +
-                    "Error Code : ${errorCode}\n" +
-                    "Error Description : ${errorDesc}", Toast.LENGTH_SHORT).show()
         }
         override fun onError(errorCode: Int, message: String) {
             onFailure(errorCode, message)
@@ -236,7 +195,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    /* 네이버 연동 해제 */ //여기 수정했다 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    /* 네이버 연동 해제 */
     internal fun naverDeleteToken() {
         clearLoginState()
         NidOAuthLogin().callDeleteTokenApi(object : OAuthLoginCallback {
@@ -253,10 +212,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("회원탈퇴", "눌림")
                 tokenInFirebase.child(UserId.userId!!).addListenerForSingleValueEvent(object: ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        // This method is called once with the initial value and again
-                        // whenever data at this location is updated.
                             val value = snapshot.getValue().toString()
-                        Toast.makeText(this@MainActivity, value, Toast.LENGTH_LONG).show()
                         Log.d("회원탈퇴", "Value is는: " + value)
                         val call = signoutService.signout(value)
                         Log.i("call", call.toString())
@@ -267,23 +223,18 @@ class MainActivity : AppCompatActivity() {
                                         .addOnSuccessListener {
                                             // 성공적으로 데이터를 삭제한 경우
                                             Log.d("Firebase", "Token successfully deleted.")
-
-//                                            val intent = Intent(this@MainActivity, MyFavoriteActivity::class.java)
-//                                            startActivity(intent)
                                         }
                                         .addOnFailureListener { e ->
                                             // 데이터를 삭제하는 데 실패한 경우
                                             Log.e("Firebase", "Failed to delete token.", e)
                                         }
 
-                                    Toast.makeText(this@MainActivity, "회원탈퇴 성공", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this@MainActivity, "회원탈퇴되었습니다.", Toast.LENGTH_SHORT).show()
                                 } else {
                                     Log.e(TAG, "Response unsuccessful: ${response.code()}")
-                                    Toast.makeText(this@MainActivity, "회원탈퇴에서 실패", Toast.LENGTH_SHORT).show()
                                 }
                             }
                             override fun onFailure(call: Call<String>, t: Throwable) { //spring boot에 데이터 전송 실패시
-                                Toast.makeText(this@MainActivity, "네이버 연동 해제 데이터 전송 실패", Toast.LENGTH_SHORT).show()
                                 Log.e("call error", t.toString())
                             }
                         })
@@ -310,7 +261,6 @@ class MainActivity : AppCompatActivity() {
     /* 네이버 로그아웃 */
     private fun naverLogout() {
         Log.d("로그아웃", "으로 네이버 로그아웃")
-        Toast.makeText(this@MainActivity, "로그아웃이지롱", Toast.LENGTH_LONG).show()
         NaverIdLoginSDK.logout()
         clearLoginState()
         val retrofit = Retrofit.Builder()
@@ -322,10 +272,7 @@ class MainActivity : AppCompatActivity() {
 
         tokenInFirebase.child(UserId.userId!!).addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
                 val value = snapshot.getValue().toString()
-                Toast.makeText(this@MainActivity, value, Toast.LENGTH_LONG).show()
                 Log.d("로그아웃", "Value is: " + value)
                 val call = logoutService.logout(value)
                 Log.i("call", call.toString())
@@ -336,21 +283,17 @@ class MainActivity : AppCompatActivity() {
                                 .addOnSuccessListener {
                                     // 성공적으로 데이터를 삭제한 경우
                                     Log.d("Firebase", "Token successfully deleted.")
-//                                    val intent = Intent(this@MainActivity, MainActivity::class.java)
-//                                    startActivity(intent)
                                 }
                                 .addOnFailureListener { e ->
                                     // 데이터를 삭제하는 데 실패한 경우
                                     Log.e("Firebase", "Failed to delete token.", e)
                                 }
-                            Toast.makeText(this@MainActivity, "로그아웃 성공", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@MainActivity, "로그아웃되었습니다.", Toast.LENGTH_SHORT).show()
                         } else {
                             Log.e(TAG, "Response unsuccessful: ${response.code()}")
-                            Toast.makeText(this@MainActivity, "로그아웃에서 실패", Toast.LENGTH_SHORT).show()
                         }
                     }
                     override fun onFailure(call: Call<String>, t: Throwable) { //spring boot에 데이터 전송 실패시
-                        Toast.makeText(this@MainActivity, "네이버 로그아웃 데이터 전송 실패", Toast.LENGTH_SHORT).show()
                         Log.e("call error", t.toString())
                     }
                 })
