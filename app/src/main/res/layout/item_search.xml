@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingVertical="16dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -12,7 +11,6 @@
         <CheckBox
             android:id="@+id/btnChecked"
             android:visibility="invisible"
-            android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -20,19 +18,23 @@
             android:id="@+id/searchText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:textSize="20dp"
             android:text="A"
-            android:layout_marginTop="2dp"/>
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:paddingBottom="5dp"
+            />
 
 
         <ImageView
             android:id="@+id/btnX"
-            android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_btn_x"
-            android:layout_marginStart="16dp"/>
+            android:gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center"/>
 
     </LinearLayout>
 
