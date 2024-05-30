@@ -612,8 +612,6 @@ class SearchActivity : AppCompatActivity() {
                 System.exit(0)
                 finishAffinity()
             }
-
         }
     }
-
 }

@@ -46,6 +46,7 @@ class MyFavoriteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMyFavoriteBinding
     lateinit var mDatas : FavoriteDataList // 즐겨찾기 데이터 리스트 변수
     private var backpressedTime: Long = 0
+    private var toastClickTime : Long = 0
 
     private lateinit var drawer : DrawerLayout
     companion object{
@@ -53,7 +54,7 @@ class MyFavoriteActivity : AppCompatActivity() {
         var myFavoriteActivity : MyFavoriteActivity ?= null
 
         private var instance: MyFavoriteActivity? = null
-//        private var id = "-100"
+        //        private var id = "-100"
         private val idList = ArrayList<String>()
 
         fun setIsBtnStar(isStar : Boolean, id : String){
@@ -81,82 +82,18 @@ class MyFavoriteActivity : AppCompatActivity() {
         // 자신의 액티비티 담기
         myFavoriteActivity = this
 
-        //firebase에 저장된 토큰 가져오기
-        val database = Firebase.database
-        val tokenInFirebase = database.getReference("Token")
-        var accessToken : String? = null
-        tokenInFirebase.child(UserId.userId!!).addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                accessToken = snapshot.getValue().toString()
-//                Toast.makeText(this@MyFavoriteActivity,"파이어베이스 성공!", Toast.LENGTH_SHORT).show()
-                Log.d("onDataChange는 " , "성공")
-                // retrofit 변수 생성
-                val retrofit = Retrofit.Builder()
-                    .baseUrl("http://$ip:8080/")
-                    .addConverterFactory(GsonConverterFactory.create()) //kotlin to json(역 일수도)
-                    .build()
+        reloadBookMark()
 
-                // retrofit객체 생성
-                val myFavoriteService = retrofit.create(MyFavoriteInterface::class.java)
-                val call = myFavoriteService.getFavoriteInfo(accessToken)
+        binding.btnReload.setOnClickListener()
+        {
+            reloadBookMark()
+        }
 
 
-                call.enqueue(object : Callback<FavoriteDataList> {
-                    override fun onResponse(call: Call<FavoriteDataList>, response: Response<FavoriteDataList>) { //요청성공시
-                        if (response.isSuccessful) {
-//                            Toast.makeText(this@MyFavoriteActivity,response.toString(), Toast.LENGTH_SHORT).show()
-                            mDatas = response.body()!! //여기에 retrofit으로 springboot에서 받은 검색기록 추가.
-                            Log.d("mDatas는 " , mDatas.toString())
-                            Log.d("mDatas는 " , mDatas.favoriteList.isEmpty().toString())
-                            for(i in idList){
-//                                Toast.makeText(this@MyFavoriteActivity,mDatas.favoriteList.get(i.toInt()).toString(),Toast.LENGTH_SHORT).show()
-//                                mDatas.favoriteList.remove(mDatas.favoriteList.get(i.toInt()))
-                                idList.forEach { id ->
-                                    mDatas.favoriteList.removeAll { it.id == id }
-                                    val retrofit2 = Retrofit.Builder()
-                                        .baseUrl("http://$ip:8080/")
-                                        .addConverterFactory(ScalarsConverterFactory.create()) //kotlin to json(역 일수도)
-                                        .build()
-                                    val myFavoriteDelete = retrofit.create(DeleteOneStarInterface::class.java)
-                                    val call2 = myFavoriteDelete.deleteStar(accessToken, id)
-                                    call2.enqueue(object : Callback<String> {
-                                        override fun onResponse(call: Call<String>, response: Response<String>) { //요청성공시
-                                            if (response.isSuccessful) {
-                                                Log.d("삭제삭제", "굿")
-                                            }
-                                        }
-                                        override fun onFailure(call: Call<String>, t: Throwable) { //요청실패시
-                                            Toast.makeText(this@MyFavoriteActivity, "SearchHistoryActivity Server cannot 통신", Toast.LENGTH_SHORT).show()
-                                            Log.e("call error", t.toString())
-                                        }
-                                    })
-                                }
-                            }
-                            recyclerView(mDatas)
-                            Toast.makeText(this@MyFavoriteActivity, mDatas.toString(), Toast.LENGTH_SHORT).show()
-                        } else {
-                            Log.e(ContentValues.TAG, "Response unsuccessful: ${response.code()}")
-//                    Toast.makeText(this@SearchHistoryActivity, "SearchHistoryActivity Error", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-
-                    override fun onFailure(call: Call<FavoriteDataList>, t: Throwable) { //요청실패시
-                        Toast.makeText(this@MyFavoriteActivity, "SearchHistoryActivity Server cannot 통신", Toast.LENGTH_SHORT).show()
-                        Log.e("call error", t.toString())
-                    }
-                })
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
-            }
-        })
 
         // 즐겨찾기 전체 삭제. 서버에 전송하는 코드 작성해야 함
         binding.btnDeleteAll.setOnClickListener {
-            if(::mDatas.isInitialized && !mDatas.favoriteList.isEmpty()){
+            if(::mDatas.isInitialized){
                 AlertDialog.Builder(this)
                     .setTitle("전체 삭제하시겠습니까?")
                     .setPositiveButton("확인", object : DialogInterface.OnClickListener {
@@ -354,12 +291,92 @@ class MyFavoriteActivity : AppCompatActivity() {
         }
     }
 
+    private fun reloadBookMark()
+    {
+        //firebase에 저장된 토큰 가져오기
+        val database = Firebase.database
+        val tokenInFirebase = database.getReference("Token")
+        var accessToken : String? = null
+        tokenInFirebase.child(UserId.userId!!).addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                accessToken = snapshot.getValue().toString()
+//                Toast.makeText(this@MyFavoriteActivity,"파이어베이스 성공!", Toast.LENGTH_SHORT).show()
+                Log.d("onDataChange는 " , "성공")
+                // retrofit 변수 생성
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://$ip:8080/")
+                    .addConverterFactory(GsonConverterFactory.create()) //kotlin to json(역 일수도)
+                    .build()
+
+                // retrofit객체 생성
+                val myFavoriteService = retrofit.create(MyFavoriteInterface::class.java)
+                val call = myFavoriteService.getFavoriteInfo(accessToken)
+
+
+                call.enqueue(object : Callback<FavoriteDataList> {
+                    override fun onResponse(call: Call<FavoriteDataList>, response: Response<FavoriteDataList>) { //요청성공시
+                        if (response.isSuccessful) {
+//                            Toast.makeText(this@MyFavoriteActivity,response.toString(), Toast.LENGTH_SHORT).show()
+                            mDatas = response.body()!! //여기에 retrofit으로 springboot에서 받은 검색기록 추가.
+                            Log.d("mDatas는 " , mDatas.toString())
+                            for(i in idList){
+//                                Toast.makeText(this@MyFavoriteActivity,mDatas.favoriteList.get(i.toInt()).toString(),Toast.LENGTH_SHORT).show()
+//                                mDatas.favoriteList.remove(mDatas.favoriteList.get(i.toInt()))
+                                idList.forEach { id ->
+                                    mDatas.favoriteList.removeAll { it.id == id }
+                                    val retrofit2 = Retrofit.Builder()
+                                        .baseUrl("http://$ip:8080/")
+                                        .addConverterFactory(ScalarsConverterFactory.create()) //kotlin to json(역 일수도)
+                                        .build()
+                                    val myFavoriteDelete = retrofit.create(DeleteOneStarInterface::class.java)
+                                    val call2 = myFavoriteDelete.deleteStar(accessToken, id)
+                                    call2.enqueue(object : Callback<String> {
+                                        override fun onResponse(call: Call<String>, response: Response<String>) { //요청성공시
+                                            if (response.isSuccessful) {
+                                                Log.d("삭제삭제", "굿")
+                                            }
+                                        }
+                                        override fun onFailure(call: Call<String>, t: Throwable) { //요청실패시
+                                            Toast.makeText(this@MyFavoriteActivity, "SearchHistoryActivity Server cannot 통신", Toast.LENGTH_SHORT).show()
+                                            Log.e("call error", t.toString())
+                                        }
+                                    })
+                                }
+                            }
+                            recyclerView(mDatas)
+                            Toast.makeText(this@MyFavoriteActivity, mDatas.toString(), Toast.LENGTH_SHORT).show()
+                        } else {
+                            Log.e(ContentValues.TAG, "Response unsuccessful: ${response.code()}")
+//                    Toast.makeText(this@SearchHistoryActivity, "SearchHistoryActivity Error", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<FavoriteDataList>, t: Throwable) { //요청실패시
+                        Toast.makeText(this@MyFavoriteActivity, "SearchHistoryActivity Server cannot 통신", Toast.LENGTH_SHORT).show()
+                        Log.e("call error", t.toString())
+                    }
+                })
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
+            }
+        })
+    }
+
     @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
         if(drawer.isDrawerOpen(Gravity.RIGHT)){
             drawer.closeDrawer(Gravity.RIGHT)
         }else{
-            finish()
+            if (System.currentTimeMillis() > backpressedTime + 2000) {
+                backpressedTime = System.currentTimeMillis();
+                Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
+            } else if (System.currentTimeMillis() <= backpressedTime + 2000) {
+                finish()
+            }
 
         }
     }
