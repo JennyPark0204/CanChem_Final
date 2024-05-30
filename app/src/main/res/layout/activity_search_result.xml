@@ -52,6 +52,22 @@
             android:gravity="center"
             android:textColor="#0000FF"
             />
+        <FrameLayout
+            android:id="@+id/noResultsText"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="검색결과가 존재하지 않습니다. \n검색어를 확인하시고 다시 검색해 주세요."
+                android:textSize="20sp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                />
+        </FrameLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"

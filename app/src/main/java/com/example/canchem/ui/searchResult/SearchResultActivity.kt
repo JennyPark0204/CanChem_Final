@@ -65,11 +65,16 @@ class SearchResultActivity : AppCompatActivity() {
         searchQuery = intent.getStringExtra("searchQuery")
         compounds = intent.getParcelableArrayListExtra("compounds") ?: arrayListOf()
 
-        // 리사이클러뷰 설정
-        setupRecyclerView()
-
-        // 페이징 처리
-        setupPagingButtons()
+        if(totalElements!= 0){
+            // 리사이클러뷰 설정
+            setupRecyclerView()
+            // 페이징 처리
+            setupPagingButtons()
+            binding.noResultsText.visibility = View.GONE // 검색 결과 없음 메시지 숨기기
+        } else {
+            binding.recyclerView.visibility = View.GONE // 리사이클러뷰 숨기기
+            binding.noResultsText.visibility = View.VISIBLE // 검색 결과 없음 메시지 보이기
+        }
 
         setOnClick()
 
