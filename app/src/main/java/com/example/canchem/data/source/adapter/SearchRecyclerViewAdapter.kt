@@ -95,7 +95,7 @@ class SearchRecyclerViewAdapter(
                 token?.let {
                     deleteService.deleteSearchLog(it, searchId, {
                         // 성공 시 처리할 내용
-                        showToast("검색 기록이 삭제되었습니다.")
+                        //showToast("검색 기록이 삭제되었습니다.")
                         // 삭제 후에 해당 아이템을 리스트에서 제거하고 어댑터를 갱신
                         searchDataList = searchDataList.filterNot { it.id.toString() == searchId }
                         notifyDataSetChanged()
