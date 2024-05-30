@@ -105,6 +105,10 @@ class SearchActivity : AppCompatActivity() {
         if(drawer.isDrawerOpen(Gravity.RIGHT)){
             drawer.closeDrawer(Gravity.RIGHT)
         }
+        binding.searchView.apply {
+            setQuery("", true) // 검색어를 비웁니다.
+            clearFocus() // 포커스를 해제합니다.
+        }
         super.onResume()
     }
 
@@ -267,6 +271,7 @@ class SearchActivity : AppCompatActivity() {
                         intent.putExtra("function", "signout")
                         startActivity(intent)
                         finish()
+                        finishAffinity()
                     }
                 })
                 .setNegativeButton("취소", object : DialogInterface.OnClickListener {
@@ -286,6 +291,7 @@ class SearchActivity : AppCompatActivity() {
                         val intent = Intent(this@SearchActivity, MainActivity::class.java)
                         intent.putExtra("function", "logout")
                         startActivity(intent)
+                        finishAffinity()
                         finish()
                     }
                 })
@@ -612,7 +618,6 @@ class SearchActivity : AppCompatActivity() {
                 System.exit(0)
                 finishAffinity()
             }
-
         }
     }
 
