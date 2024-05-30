@@ -70,6 +70,11 @@ class SearchHistoryActivity : AppCompatActivity() {
                 // 드로어 상태가 변경될 때 호출됨
             }
         })
+
+        binding.backBt.setOnClickListener{
+            onBackPressed()
+        }
+        
         // side menu. 여기부터 아래 코드는 모든 액티비티에 포함됨.
         // 메뉴 클릭시
         binding.btnMenu.setOnClickListener {

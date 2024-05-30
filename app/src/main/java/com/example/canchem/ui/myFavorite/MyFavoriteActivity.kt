@@ -89,6 +89,10 @@ class MyFavoriteActivity : AppCompatActivity() {
             reloadBookMark()
         }
 
+        binding.backBt.setOnClickListener{
+            onBackPressed()
+        }
+
 
 
         // 즐겨찾기 전체 삭제. 서버에 전송하는 코드 작성해야 함
